@@ -7,8 +7,5 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @EnableWebSecurity
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public UserDetailsService userDetailsService(){
 
-    }
 }
