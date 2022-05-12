@@ -38,7 +38,7 @@ public class LoginController {
         String username = null;
         String password = null;
         try{
-            String[] decoded = decodeBasic64Str(authorizationHeader.substring(6)).split(":");
+            String[] decoded = decodeBase64Str(authorizationHeader.substring(6)).split(":");
             username = decoded[0];
             password = decoded[1];
 
@@ -55,7 +55,7 @@ public class LoginController {
         return Map.of("jwt", jwt);
     }
 
-    private String decodeBasic64Str(String str){
+    private String decodeBase64Str(String str){
         return new String(
                 Base64.getDecoder().decode(str.getBytes(StandardCharsets.UTF_8)),
                 StandardCharsets.UTF_8
