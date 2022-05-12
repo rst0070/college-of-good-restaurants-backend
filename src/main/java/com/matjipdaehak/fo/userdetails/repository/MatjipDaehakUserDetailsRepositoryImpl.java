@@ -1,28 +1,24 @@
-package com.matjipdaehak.fo.userdetails;
+package com.matjipdaehak.fo.userdetails.repository;
 
-
+import com.matjipdaehak.fo.userdetails.MatjipDaehakUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
 import java.util.Map;
 
-/**
- *
- */
 @Repository
-public class MatjipDaehakUserDetailsRepository {
+public class MatjipDaehakUserDetailsRepositoryImpl implements MatjipDaehakUserDetailsRepository{
 
     //https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     //https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/namedparam/NamedParameterJdbcTemplate.html
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    public MatjipDaehakUserDetailsRepository(
+    public MatjipDaehakUserDetailsRepositoryImpl(
             JdbcTemplate jdbcTemplate,
             NamedParameterJdbcTemplate namedParameterJdbcTemplate){
 
@@ -30,12 +26,12 @@ public class MatjipDaehakUserDetailsRepository {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-
     /**
      *
      * @param username - 찾고자하는 사용자 아이디(USER.user_id 해당)
      * @return MatjipDaehakUserDetails. 만약 해당 아이디의 user가 없는 경우 null
      */
+    @Override
     public MatjipDaehakUserDetails getUserDetailsByUsername(String username){
         String query = "select * from USER where user_id = :id";
 
@@ -50,7 +46,7 @@ public class MatjipDaehakUserDetailsRepository {
     /**
      * 쿼리결과를 MatjipDaehakUserDetails에 매핑시켜 반환한다.
      * @param rows - SqlRowSet
-     * @Param rowNum - mapping 시키려는 row 번호
+     * @param rowNum - mapping 시키려는 row 번호
      * @return MatjipDaehakUserDetails. row가 빈경우 null반환
      */
     private MatjipDaehakUserDetails mapRow(SqlRowSet rows, int rowNum){

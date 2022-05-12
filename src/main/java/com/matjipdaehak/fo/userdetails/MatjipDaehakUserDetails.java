@@ -6,6 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
+/**
+ * 사용자 정보 객체
+ */
 @Data
 @NoArgsConstructor
 public class MatjipDaehakUserDetails implements UserDetails {
