@@ -11,7 +11,8 @@ public interface JwtService {
      * JWT의 유효성을 확인한다. 기능은 아래와 같다.
      * 1. 해당 문자열이 jwt인지(null인 경우도 확인)
      * 2. jwt인 경우 validation이 유효한지
-     * 3. exp가 지나지 않았는지
+     * 3. issuer가 동일한지
+     * 4. exp가 지나지 않았는지
      * @param jwtString
      * @return true - 유효한 jwt. false - 유효하지 않거나 jwt가 아닌경우
      */
@@ -23,4 +24,5 @@ public interface JwtService {
      * @return jwt문자열
      */
     String getJwtByUsername(String username);
+
 }

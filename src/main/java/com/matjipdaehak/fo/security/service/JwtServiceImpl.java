@@ -8,7 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.stereotype.Service;
 
@@ -22,10 +22,11 @@ public class JwtServiceImpl implements JwtService{
      * exp는 numeric date사용
      */
 
-    private final String SECRET_STRING = "b4P%YnnNOgl7:m({iJg?P|B4ND;-Yd";
+    private final String SECRET_STRING = "b4P%YnnNOgl7:m({iJg?P|B4ND;-Ydb4P%YnnNOgl7:m({iJg?P|B4ND;-Yd";
     private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET_STRING.getBytes(StandardCharsets.UTF_8));
-    private final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-    private final long EXP_MINUTES = 60;
+    private final TimeZone TIME_ZONE = TimeZone.getTimeZone("GMT");
+    private final int EXP_MINUTES = 60;
+    private final String ISSUER = "맛집대학";
 
     @Override
     public boolean checkJwtValidation(String jwtString){
@@ -39,27 +40,30 @@ public class JwtServiceImpl implements JwtService{
             return false;
         }
         Claims claims = jws.getBody();
-        String expStr = claims.get("exp").toString();
-        LocalDateTime exp = LocalDateTime.parse(expStr, TIME_FORMAT);
 
-        //jwt의 만료시각이 현재시각보다 앞설경우 false
-        return exp.compareTo(LocalDateTime.now()) > 0;
+        if(!claims.getIssuer().equals(this.ISSUER)) return false;
+
+        return claims.getExpiration().compareTo(this.getDateNow()) > 0;
     }
 
     @Override
     public String getJwtByUsername(String username){
-        Map<String, String> claims = Map.of(
-                "sub", username,
-                "exp", getExp()
-        );
         return Jwts.builder()
-                .setClaims(claims)
+                .setIssuer(this.ISSUER)
+                .setIssuedAt(getDateNow())
+                .setExpiration(getExpDate())
+                .setSubject(username)
                 .signWith(SECRET_KEY)
                 .compact();
     }
 
-    private String getExp(){
-        return LocalDateTime.now().plusMinutes(EXP_MINUTES).format(TIME_FORMAT);
+    private Date getExpDate(){
+        Calendar calendar = Calendar.getInstance(TIME_ZONE);
+        calendar.add(Calendar.MINUTE, EXP_MINUTES);
+        return calendar.getTime();
     }
 
+    private Date getDateNow(){
+        return Calendar.getInstance(TIME_ZONE).getTime();
+    }
 }
