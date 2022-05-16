@@ -2,7 +2,11 @@ package com.matjipdaehak.fo.usermanage.login.controller;
 
 import com.matjipdaehak.fo.exception.AuthorizationException;
 import com.matjipdaehak.fo.usermanage.login.service.LoginService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.*;
@@ -14,6 +18,7 @@ import java.util.Map;
 @RequestMapping("/user-management/login")
 public class LoginController {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final LoginService loginService;
 
     @Autowired
@@ -28,30 +33,23 @@ public class LoginController {
      * @throws AuthorizationException - 로그인 정보등에 오류가 있을경우 예외처리한다.
      */
     @RequestMapping
-    public Map<String, String> loginAction(HttpServletRequest req) throws AuthorizationException{
+    public Map<String, String> loginAction(HttpServletRequest req) throws BadCredentialsException, InternalAuthenticationServiceException {
 
         final String authorizationHeader = req.getHeader("Authorization");
         //헤더 정보에 오류있을경우 예외 throw
-        if(authorizationHeader == null || !authorizationHeader.startsWith("basic "))
-            throw new AuthorizationException();
+        if(authorizationHeader == null || !authorizationHeader.startsWith("Basic ")) throw new BadCredentialsException("the authorization header has problems");
 
-        String username = null;
-        String password = null;
+
+        String[] decoded;
         try{
-            String[] decoded = decodeBase64Str(authorizationHeader.substring(6)).split(":");
-            username = decoded[0];
-            password = decoded[1];
+            decoded = decodeBase64Str(authorizationHeader.substring(6)).split(":");
+        }catch(Exception ex){throw new BadCredentialsException(ex.getMessage());}
 
-        }catch(Exception ex){//split연산, 배열 연산등에서 예외발생시
-            throw new AuthorizationException("in com.matjipdaehak.fo.usermanage.login.LoginController:loginAction "+
-                    "while decoding authorizationHeader");
-        }
+        String username = decoded[0];
+        String password = decoded[1];
 
-        //username, password 맞지 않을 경우 예외 throw
-        if(!loginService.checkUsernamePassword(username, password))
-            throw new AuthorizationException();
-
-        String jwt = loginService.getJwtByUsername(username);
+        String jwt = loginService.getJwtByUsernamePassword(username, password);
+        logger.info("user id: "+username+" issued JWT");
         return Map.of("jwt", jwt);
     }
 

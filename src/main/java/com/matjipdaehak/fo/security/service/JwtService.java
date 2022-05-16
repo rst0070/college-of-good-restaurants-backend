@@ -1,28 +1,34 @@
 package com.matjipdaehak.fo.security.service;
 
+import javax.crypto.SecretKey;
+import java.util.*;
 /**
- * 해당 서비스에서 다루는 jwt는 아래의 클래임을 갖게된다.
- * 1. sub - 사용자 아이디에 해당
- * 2. exp - 만료 시각
+ * 시스템에서 자주 사용되는 jwt의 공통 속성들
  */
 public interface JwtService {
 
     /**
-     * JWT의 유효성을 확인한다. 기능은 아래와 같다.
-     * 1. 해당 문자열이 jwt인지(null인 경우도 확인)
-     * 2. jwt인 경우 validation이 유효한지
-     * 3. issuer가 동일한지
-     * 4. exp가 지나지 않았는지
-     * @param jwtString
-     * @return true - 유효한 jwt. false - 유효하지 않거나 jwt가 아닌경우
+     * jwt sign에 사용되는 key
+     * @return SecretKey
      */
-    boolean checkJwtValidation(String jwtString);
+    SecretKey getSecretKey();
 
     /**
-     * username으로 jwt생성
-     * @param username
-     * @return jwt문자열
+     * JWT의 exp속성을 전달하여 해당 토큰이 만료되었는지 확인한다.
+     * ex) isExpired(claims.getExpiration());
+     * @param exp - jwt의 exp속성
+     * @return true - 시간이 만료된 경우, false - 만료되지 않은경우
      */
-    String getJwtByUsername(String username);
+    boolean isExpired(Date exp);
+
+    /**
+     * @return Date - 현재 시간
+     */
+    Date getDateNow();
+
+    /**
+     * @return Date - jwt에 사용될 exp값
+     */
+    Date getExpDate();
 
 }

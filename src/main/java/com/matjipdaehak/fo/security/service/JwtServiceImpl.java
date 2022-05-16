@@ -1,13 +1,8 @@
 package com.matjipdaehak.fo.security.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
@@ -29,41 +24,23 @@ public class JwtServiceImpl implements JwtService{
     private final String ISSUER = "맛집대학";
 
     @Override
-    public boolean checkJwtValidation(String jwtString){
-        Jws<Claims> jws;
-        try{
-            jws = Jwts.parserBuilder()
-                    .setSigningKey(SECRET_KEY)
-                    .build()
-                    .parseClaimsJws(jwtString);
-        }catch(JwtException ex){//signature 맞는지 || jwtString이 jwt형식이 맞는지 확인
-            return false;
-        }
-        Claims claims = jws.getBody();
-
-        if(!claims.getIssuer().equals(this.ISSUER)) return false;
-
-        return claims.getExpiration().compareTo(this.getDateNow()) > 0;
+    public SecretKey getSecretKey(){
+        return SECRET_KEY;
     }
 
     @Override
-    public String getJwtByUsername(String username){
-        return Jwts.builder()
-                .setIssuer(this.ISSUER)
-                .setIssuedAt(getDateNow())
-                .setExpiration(getExpDate())
-                .setSubject(username)
-                .signWith(SECRET_KEY)
-                .compact();
+    public boolean isExpired(Date exp) {
+        return this.getDateNow().compareTo(exp) >= 0;
     }
 
-    private Date getExpDate(){
+
+    public Date getExpDate(){
         Calendar calendar = Calendar.getInstance(TIME_ZONE);
         calendar.add(Calendar.MINUTE, EXP_MINUTES);
         return calendar.getTime();
     }
 
-    private Date getDateNow(){
+    public Date getDateNow(){
         return Calendar.getInstance(TIME_ZONE).getTime();
     }
 }
