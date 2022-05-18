@@ -10,15 +10,18 @@ spring:
     console:
       enabled: true
       path: /h2-console
-
   mail:
     host: smtp.gmail.com
     port: 587
-    username: 3moneey
-    password: moneymakesmoney99!
-    properties.mail.smtp:
-      auth: true
-      starttls.enabled: true
+    username: kwb0711@gmail.com
+    password: uuvhfkyczeutdvfy
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
 
 # mail 설정
 
