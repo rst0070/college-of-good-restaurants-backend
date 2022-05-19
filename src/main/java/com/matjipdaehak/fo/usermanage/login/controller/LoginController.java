@@ -29,8 +29,9 @@ public class LoginController {
     /**
      * {"jwt" : "jwt토큰내용"}방식으로 반환한다.
      * @param req
-     * @return
-     * @throws AuthorizationException - 로그인 정보등에 오류가 있을경우 예외처리한다.
+     * @return json 형식
+     * @throws BadCredentialsException - 인증정보오류
+     * @throws InternalAuthenticationServiceException - jwt생성중 오류
      */
     @RequestMapping
     public Map<String, String> loginAction(HttpServletRequest req) throws BadCredentialsException, InternalAuthenticationServiceException {

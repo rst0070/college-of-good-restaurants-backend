@@ -20,17 +20,14 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableWebSecurity
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-    private final MatjipDaehakUserDetailsService userDetailsService;
     private final JwtService jwtService;
 
     @Autowired
     public SecurityConfigurer(
-            JwtService jwtService,
-            MatjipDaehakUserDetailsService userDetailsService
+            JwtService jwtService
     ){
         super();
         this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -72,6 +69,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 
     public AuthenticationProvider jwtAuthenticationProvider(){
-        return new JwtAuthenticationProvider(userDetailsService, jwtService);
+        return new JwtAuthenticationProvider(jwtService);
     }
 }

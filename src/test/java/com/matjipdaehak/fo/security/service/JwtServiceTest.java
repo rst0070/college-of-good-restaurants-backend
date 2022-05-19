@@ -10,6 +10,6 @@ import static org.assertj.core.api.Assertions.*;
 
 public class JwtServiceTest {
 
-    private final JwtService jwtService = new JwtServiceImpl();
+    //private final JwtService jwtService = new JwtServiceImpl();
 
 }

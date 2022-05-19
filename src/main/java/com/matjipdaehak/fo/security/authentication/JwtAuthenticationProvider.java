@@ -1,6 +1,7 @@
 package com.matjipdaehak.fo.security.authentication;
 
 import com.matjipdaehak.fo.security.service.JwtService;
+import com.matjipdaehak.fo.userdetails.MatjipDaehakUserDetails;
 import com.matjipdaehak.fo.userdetails.service.MatjipDaehakUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -11,14 +12,11 @@ import org.springframework.security.core.AuthenticationException;
 
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
-    private final MatjipDaehakUserDetailsService userDetailsService;
     private final JwtService jwtService;
 
     public JwtAuthenticationProvider(
-            MatjipDaehakUserDetailsService userDetailsService,
             JwtService jwtService
     ){
-        this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
     }
 
@@ -28,16 +26,10 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             JwtAuthentication auth = (JwtAuthentication) authentication;
             final String jwt = auth.getCredentials();
 
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(jwtService.getSecretKey())
-                    .build()
-                    .parseClaimsJws(jwt)
-                    .getBody();
+            MatjipDaehakUserDetails userDetails =
+                    jwtService.getUserDetailsFromJwt(jwt);
 
-            String username = claims.getSubject();
-            if(jwtService.isExpired(claims.getExpiration())) throw new BadCredentialsException("JWT with user id - "+username+" expired");
-
-            auth.setUserDetails(userDetailsService.loadUserByUsername(username));
+            auth.setUserDetails(userDetails);
             auth.setAuthenticated(true);
             return auth;
         }catch(Exception ex){
