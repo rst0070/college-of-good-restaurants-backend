@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.sql.ResultSet;
 
 @Repository
 public class CommonRepositoryImpl implements CommonRepository{

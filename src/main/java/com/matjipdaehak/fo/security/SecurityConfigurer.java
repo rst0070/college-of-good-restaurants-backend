@@ -16,9 +16,12 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableWebSecurity
-public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
+public class SecurityConfigurer extends WebSecurityConfigurerAdapter
+implements WebMvcConfigurer {
 
     private final JwtService jwtService;
 
@@ -28,6 +31,18 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     ){
         super();
         this.jwtService = jwtService;
+    }
+
+    /**
+     * cors허용 설정 일단 localhost:3000만 허용
+     * @param registry
+     */
+    @Override
+    public void addCorsMappings(CorsRegistry registry){
+        registry.addMapping("/**")
+                .exposedHeaders("Authorization")
+                .allowCredentials(true)
+                .allowedOrigins("https://localhost:3000");
     }
 
     @Override

@@ -46,3 +46,9 @@ alter table place_list_at_college
 alter table place_list_at_college
 	add constraint link_to_place_from_place_list
     foreign key (PLACE_id) references PLACE (place_id);
+    
+create table EMAIL_AUTH_CODE(
+	email_addr varchar(320) primary key,
+    auth_code varchar(8) not null,
+    exp_date datetime not null
+);
