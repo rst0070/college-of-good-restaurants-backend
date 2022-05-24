@@ -20,8 +20,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableWebSecurity
-public class SecurityConfigurer extends WebSecurityConfigurerAdapter
-implements WebMvcConfigurer {
+public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     private final JwtService jwtService;
 
@@ -31,18 +30,6 @@ implements WebMvcConfigurer {
     ){
         super();
         this.jwtService = jwtService;
-    }
-
-    /**
-     * cors허용 설정 일단 localhost:3000만 허용
-     * @param registry
-     */
-    @Override
-    public void addCorsMappings(CorsRegistry registry){
-        registry.addMapping("/**")
-                .exposedHeaders("Authorization")
-                .allowCredentials(true)
-                .allowedOrigins("https://localhost:3000");
     }
 
     @Override
@@ -60,6 +47,9 @@ implements WebMvcConfigurer {
                 .disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http
+                .cors()
+                .disable();
         http
                 .authorizeRequests()
                 .antMatchers(
