@@ -45,7 +45,10 @@ public class SignupServiceImpl implements SignupService{
     @Override
     public boolean isEmailAddressPossible(String emailAddress) {
         Matcher matcher = emailAddrPattern.matcher(emailAddress);
-        if(!matcher.matches()) return false;
+        if(!matcher.matches()){
+            logger.info("email addr not matched");
+            return false;
+        }
         String domain = emailAddress.split("@")[1];
 
         return signupRepository.isCollegeExistWithEmailDomain(domain)
@@ -86,7 +89,7 @@ public class SignupServiceImpl implements SignupService{
 
     @Override
     public boolean isUserIdPossible(String userId) {
-        return signupRepository.isUserIdTaken(userId);
+        return !signupRepository.isUserIdTaken(userId);
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.matjipdaehak.fo.usermanage.signup.controller;
 import com.matjipdaehak.fo.usermanage.signup.service.SignupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @RestController
@@ -23,30 +25,32 @@ public class SignupController {
      * @return
      */
     @PostMapping("/send-auth-code")
-    public Map<String, String> sendAuthCode(@RequestBody Map<String, Object> reqBody){
+    public Map<String, String> sendAuthCode(@RequestBody Map<String, Object> reqBody, HttpServletResponse res){
 
         String email = reqBody.get("email").toString();
-        if(!signupService.isEmailAddressPossible(email))
-            return Map.of("status", "failed",
-                    "message", "The email address is not possible");
 
-        if(!signupService.sendAuthCodeToEmail(email))
-            return Map.of("status", "failed",
-                    "message", "error occured while sending email");
+        if(!signupService.isEmailAddressPossible(email)){
+            res.setStatus(412);
+            return Map.of("message", "The email address is not possible");
+        }
 
-        return Map.of(
-                "status", "success",
-                "message","sended auth code"
-        );
+        if(!signupService.sendAuthCodeToEmail(email)){
+            res.setStatus(500);
+            return Map.of("message", "error occured while sending email");
+        }
+
+        return Map.of("message","sended auth code");
     }
 
     @RequestMapping("/check-auth-code")
-    public Map<String, String> checkAuthCode(@RequestBody Map<String, String> reqMap){
+    public Map<String, String> checkAuthCode(@RequestBody Map<String, String> reqMap, HttpServletResponse res){
         String email = reqMap.get("email");
         String authCode = reqMap.get("auth-code");
-        if(signupService.checkAuthCode(email, authCode))
-            return Map.of("status", "success");
-        return Map.of("status", "failed");
+        if(!signupService.checkAuthCode(email, authCode)){
+            res.setStatus(406);
+            return Map.of("message", "auth code is not matched");
+        }
+        return Map.of("message", "auth code is matched");
     }
 
     /**
@@ -54,11 +58,13 @@ public class SignupController {
      * @return {} - 유효한 id인 경우 , {} - 유효하지 않은경우
      */
     @RequestMapping("/check-user-id")
-    public Map<String, String> checkUserId(@RequestBody Map<String, String> reqMap){
+    public Map<String, String> checkUserId(@RequestBody Map<String, String> reqMap, HttpServletResponse res){
         String userId = reqMap.get("user-id");
-        if(signupService.isUserIdPossible(userId))
-            return Map.of("status", "success");
-        return Map.of("status", "failed");
+        if(!signupService.isUserIdPossible(userId)){
+            res.setStatus(406);
+            return Map.of("message", "the id is not possible to use");
+        }
+        return Map.of("message", "id is possible to use");
     }
 
     /**
@@ -76,15 +82,22 @@ public class SignupController {
      * @return
      */
     @RequestMapping
-    public Map<String, String> signupAction(@RequestBody Map<String, String> reqMap) throws Exception{
+    public Map<String, String> signupAction(@RequestBody Map<String, String> reqMap, HttpServletResponse res){
         String emailAddr = reqMap.get("email");
         String authCode = reqMap.get("auth-code");
         String userId = reqMap.get("user-id");
         String password = reqMap.get("password");
         String nickname = reqMap.get("nickname");
 
-        if(!signupService.checkAuthCode(emailAddr, authCode)) throw new Exception("인증코드 불일치");
-        if(!signupService.isUserIdPossible(userId)) throw new Exception("아이디 사용 불가");
+        if(!signupService.checkAuthCode(emailAddr, authCode)){
+            res.setStatus(406);
+            return Map.of("message", "인증코드 불일치");
+        }
+        if(!signupService.isUserIdPossible(userId)){
+            res.setStatus(406);
+            return Map.of("message", "해당 아이디 사용불가");
+        }
+
         signupService.createNewUser(userId, password, nickname, emailAddr);
 
         return Map.of("status", "success");

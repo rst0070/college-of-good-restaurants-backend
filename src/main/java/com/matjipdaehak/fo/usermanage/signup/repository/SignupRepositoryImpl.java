@@ -28,7 +28,7 @@ public class SignupRepositoryImpl implements SignupRepository{
                 "select EXISTS( " +
                 "select 1 " +
                 "from USER " +
-                "where college_email_addr = ? " +
+                "where college_email_address = ? " +
                 ")";
 
         return jdbcTemplate.queryForObject(
@@ -72,7 +72,7 @@ public class SignupRepositoryImpl implements SignupRepository{
         String sql = "" +
                 "select email_addr, auth_code, exp_date " +
                 "from EMAIL_AUTH_CODE " +
-                "wherer email_addr = ?";
+                "where email_addr = ?";
 
         return jdbcTemplate.queryForObject(
                 sql,
