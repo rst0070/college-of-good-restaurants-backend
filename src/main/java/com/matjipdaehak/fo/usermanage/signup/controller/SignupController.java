@@ -65,6 +65,7 @@ public class SignupController {
      * {
      *     "user-id" :"",
      *     "password":"",
+     *     "nickname":"",
      *     "auth-code":"",
      *     "email":""
      * }
@@ -80,9 +81,11 @@ public class SignupController {
         String authCode = reqMap.get("auth-code");
         String userId = reqMap.get("user-id");
         String password = reqMap.get("password");
+        String nickname = reqMap.get("nickname");
+
         if(!signupService.checkAuthCode(emailAddr, authCode)) throw new Exception("인증코드 불일치");
         if(!signupService.isUserIdPossible(userId)) throw new Exception("아이디 사용 불가");
-        signupService.createNewUser(userId, password, emailAddr);
+        signupService.createNewUser(userId, password, nickname, emailAddr);
 
         return Map.of("status", "success");
     }

@@ -1,5 +1,7 @@
 package com.matjipdaehak.fo.userdetails.service;
 
+import com.matjipdaehak.fo.college.model.College;
+import com.matjipdaehak.fo.college.service.CollegeService;
 import com.matjipdaehak.fo.userdetails.MatjipDaehakUserDetails;
 import com.matjipdaehak.fo.userdetails.repository.MatjipDaehakUserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +12,13 @@ import org.springframework.stereotype.Service;
 public class MatjipDaehakUserDetailsServiceImpl implements MatjipDaehakUserDetailsService{
 
     private final MatjipDaehakUserDetailsRepository userDetailsRepository;
-
+    private final CollegeService collegeService;
     @Autowired
     public MatjipDaehakUserDetailsServiceImpl(
-            MatjipDaehakUserDetailsRepository userDetailsRepository){
-
+            MatjipDaehakUserDetailsRepository userDetailsRepository,
+            CollegeService collegeService){
         this.userDetailsRepository = userDetailsRepository;
+        this.collegeService = collegeService;
     }
 
     @Override
@@ -28,4 +31,21 @@ public class MatjipDaehakUserDetailsServiceImpl implements MatjipDaehakUserDetai
         MatjipDaehakUserDetails userDetails = userDetailsRepository.getUserDetailsByUsername(username);
         return userDetails != null && userDetails.getPassword().equals(password);
     }
+
+    @Override
+    public void createNewUser(String username, String password, String nickname, String collegeEmailAddress) {
+        String collegeDomain = collegeEmailAddress.split("@")[1];
+
+        College college = collegeService.getCollegeByEmailDomain(collegeDomain);
+
+        MatjipDaehakUserDetails user = new MatjipDaehakUserDetails();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setNickname(nickname);
+        user.setCollegeId(college.getCollegeId());
+        user.setCollegeEmailAddress(collegeEmailAddress);
+
+        userDetailsRepository.insertUser(user);
+    }
+
 }

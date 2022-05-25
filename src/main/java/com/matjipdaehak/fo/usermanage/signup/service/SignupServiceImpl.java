@@ -1,6 +1,7 @@
 package com.matjipdaehak.fo.usermanage.signup.service;
 
 import com.matjipdaehak.fo.common.service.EmailService;
+import com.matjipdaehak.fo.userdetails.service.MatjipDaehakUserDetailsService;
 import com.matjipdaehak.fo.usermanage.signup.model.EmailAuthCode;
 import com.matjipdaehak.fo.usermanage.signup.repository.SignupRepository;
 import org.slf4j.Logger;
@@ -20,16 +21,19 @@ public class SignupServiceImpl implements SignupService{
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SignupRepository signupRepository;
     private final EmailService emailService;
+    private final MatjipDaehakUserDetailsService userDetailsService;
     private final Pattern emailAddrPattern = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
     private final Random random = new Random();
 
     @Autowired
     public SignupServiceImpl(
             SignupRepository signupRepository,
-            EmailService emailService
+            EmailService emailService,
+            MatjipDaehakUserDetailsService userDetailsService
     ){
         this.signupRepository = signupRepository;
         this.emailService = emailService;
+        this.userDetailsService = userDetailsService;
     }
 
     private Date getAuthCodeExpDate(){
@@ -91,8 +95,15 @@ public class SignupServiceImpl implements SignupService{
         return authCode.equals(inDb.getAuthCode());
     }
 
+    /**
+     * MatjipDaehakUserdetailsService를 이용한다.
+     * @param username - 사용자 id
+     * @param password
+     * @param nickname
+     * @param emailAddr - 사용자 학교 이메일 주소
+     */
     @Override
-    public void createNewUser(String username, String password, String emailAddr) {
-
+    public void createNewUser(String username, String password, String nickname, String emailAddr) {
+        userDetailsService.createNewUser(username, password, nickname, emailAddr);
     }
 }

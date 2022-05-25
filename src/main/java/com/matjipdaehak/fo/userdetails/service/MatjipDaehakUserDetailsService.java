@@ -1,5 +1,6 @@
 package com.matjipdaehak.fo.userdetails.service;
 
+import com.matjipdaehak.fo.college.model.College;
 import com.matjipdaehak.fo.userdetails.MatjipDaehakUserDetails;
 import org.springframework.security.core.userdetails.*;
 
@@ -24,5 +25,14 @@ public interface MatjipDaehakUserDetailsService extends UserDetailsService {
     MatjipDaehakUserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
     boolean checkUsernamePassword(String username, String password);
+
+    /**
+     * 사용자를 DB에 생성한다.
+     * @param username
+     * @param password
+     * @param collegeEmailAddress
+     */
+    void createNewUser(String username, String password, String nickname, String collegeEmailAddress);
+
 
 }

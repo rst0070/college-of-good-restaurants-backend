@@ -10,4 +10,9 @@ public interface MatjipDaehakUserDetailsRepository {
      */
     MatjipDaehakUserDetails getUserDetailsByUsername(String username);
 
+    /**
+     * 사용자를 DB에 등록한다.
+     * @param userDetails - 사용자 정보 객체
+     */
+    void insertUser(MatjipDaehakUserDetails userDetails);
 }

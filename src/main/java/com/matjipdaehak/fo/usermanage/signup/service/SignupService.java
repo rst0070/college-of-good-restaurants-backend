@@ -1,5 +1,4 @@
 package com.matjipdaehak.fo.usermanage.signup.service;
-import java.util.*;
 
 public interface SignupService {
 
@@ -9,7 +8,7 @@ public interface SignupService {
      * 2. 해당하는 학교가 존재하는가
      * 3. 해당하는 주소가 유일한가
      * @param emailAddress - 확인할 이메일 주소
-     * @return
+     * @return true - 해당 이메일 사용가능. false - 사용불가
      */
     boolean isEmailAddressPossible(String emailAddress);
 
@@ -34,15 +33,15 @@ public interface SignupService {
      * null point exception 등 확인할 필요있음
      * @param emailAddress
      * @param authCode
-     * @return
+     * @return true - 인증코드 맞음. false - 인증코드 맞지 않음
      */
     boolean checkAuthCode(String emailAddress, String authCode);
 
     /**
-     * 이미 가입이 가능한지 모두 확인한 상태에서 정보만 입력하는 기능
+     * 이미 가입이 가능한지 모두 확인한 상태에서 DB에 정보만 입력하는 기능
      * @param username
      * @param password
-     * @param emailAddr
+     * @param emailAddr - 사용자 학교 이메일 주소
      */
-    void createNewUser(String username, String password, String emailAddr);
+    void createNewUser(String username, String password, String nickname, String emailAddr);
 }

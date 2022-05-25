@@ -43,6 +43,21 @@ public class MatjipDaehakUserDetailsRepositoryImpl implements MatjipDaehakUserDe
         return mapRow(row, 1);
     }
 
+    @Override
+    public void insertUser(MatjipDaehakUserDetails userDetails) {
+        String sql = "" +
+                "insert into USER(COLLEGE_id, nickname, user_id, password, college_email_address) " +
+                "values( ?, ?, ?, ?, ?) ";
+
+        jdbcTemplate.update(sql,
+                userDetails.getCollegeId(),
+                userDetails.getNickname(),
+                userDetails.getUsername(),
+                userDetails.getPassword(),
+                userDetails.getCollegeEmailAddress()
+        );
+    }
+
     /**
      * 쿼리결과를 MatjipDaehakUserDetails에 매핑시켜 반환한다.
      * @param rows - SqlRowSet
