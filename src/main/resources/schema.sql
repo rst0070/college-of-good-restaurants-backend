@@ -31,7 +31,8 @@ create table PLACE(
     place_address varchar(100) not null,
     latitude double not null,
     longitude double not null,
-    phone varchar(20)
+    phone varchar(20),
+    constraint place_unique_by_address_and_name unique (place_address, place_name)
 );
 
 create table PLACE_LIST_AT_COLLEGE(
