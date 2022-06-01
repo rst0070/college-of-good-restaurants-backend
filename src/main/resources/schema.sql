@@ -30,7 +30,8 @@ create table PLACE(
     place_name varchar(50) not null,
     place_address varchar(100) not null,
     latitude double not null,
-    longitude double not null
+    longitude double not null,
+    phone varchar(20)
 );
 
 create table PLACE_LIST_AT_COLLEGE(
@@ -47,8 +48,26 @@ alter table place_list_at_college
 	add constraint link_to_place_from_place_list
     foreign key (PLACE_id) references PLACE (place_id);
     
+create table KAKAO_PLACE(
+	PLACE_id int primary key,
+    kakao_place_id tinytext not null,
+    category tinytext not null,
+    foreign key (PLACE_id) references PLACE (place_id)
+);
+
 create table EMAIL_AUTH_CODE(
 	email_addr varchar(320) primary key,
     auth_code varchar(8) not null,
     exp_date datetime not null
 );
+
+create table REVIEW(
+	PLACE_id int,
+    USER_id int,
+    post_date date not null,
+    post_text text not null,
+    rating int,
+    primary key (PLACE_id, USER_id),
+    constraint review_rating_check check( rating in (1, 2, 3, 4, 5))
+);
+
