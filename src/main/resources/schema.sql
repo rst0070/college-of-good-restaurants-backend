@@ -64,11 +64,13 @@ create table EMAIL_AUTH_CODE(
 
 create table REVIEW(
 	PLACE_id int,
-    USER_id int,
+    USER_id varchar(20),
     post_date date not null,
     post_text text not null,
     rating int,
     primary key (PLACE_id, USER_id),
-    constraint review_rating_check check( rating in (1, 2, 3, 4, 5))
+    constraint review_rating_check check( rating in (1, 2, 3, 4, 5)),
+    foreign key (PLACE_id) references PLACE(place_id),
+    foreign key (USER_id) references USER(user_id)
 );
 
