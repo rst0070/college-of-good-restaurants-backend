@@ -16,26 +16,49 @@ public class PlaceRepositoryImpl implements PlaceRepository{
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * place id는 auto increament로 생성된다. 따라서 다음방법으로 db에 저장해야한다.
+     *
+     * 1. place를 insert한다.
+     * 2. 생성한 place의 id를 name과 address로 가져온다.
+     * 3. place id를 이용해 kakao place에 insert한다.
+     *
+     * 2번의 기능을 따로 메서드로 만들어야하는지 고민해보자.
+     *
+     * @param place - place id만 없는 place객체
+     * @throws DataAccessException
+     */
     @Override
     public void insertPlace(Place place) throws DataAccessException {
         String insertToPlace = "" +
-                "insert into PLACE(place_id, place_name, place_address, latitude, longitude, phone) " +
-                "values(?, ?, ?, ?, ?, ?) ";
+                "insert into PLACE(place_name, place_address, latitude, longitude, phone) " +
+                "values(?, ?, ?, ?, ?) ";
+
+        String getPlaceId = "" +
+                "SELECT place_id " +
+                "FROM PLACE " +
+                "WHERE place_name = ? and place_address = ? ";
 
         String insertToKakaoPlace = "" +
                 "insert into KAKAO_PLACE(PLACE_id, kakao_place_id, category) " +
                 "values(?, ?, ?) ";
 
         jdbcTemplate.update(insertToPlace,
-                place.getPlaceId(),
                 place.getName(),
                 place.getAddress(),
                 place.getLatitude(),
                 place.getLongitude(),
                 place.getPhone());
 
+        int placeId = jdbcTemplate.queryForObject(
+                getPlaceId,
+                (rs, rn) -> rs.getInt("place_id"),
+                place.getName(),
+                place.getAddress()
+        );
+
         jdbcTemplate.update(insertToKakaoPlace,
-                place.getPlaceId(),
+                placeId,
                 place.getKakaoPlaceId(),
                 place.getCategory());
     }

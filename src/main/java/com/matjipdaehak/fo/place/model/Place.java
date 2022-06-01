@@ -28,7 +28,27 @@ public class Place {
             String phone,
             String category
     ){
+        this(
+                kakaoPlaceId,
+                name,
+                address,
+                latitude,
+                longitude,
+                phone,
+                category
+        );
         this.placeId = placeId;
+    }
+
+    public Place(
+            String kakaoPlaceId,
+            String name,
+            String address,
+            double latitude,
+            double longitude,
+            String phone,
+            String category
+    ){
         this.kakaoPlaceId = kakaoPlaceId;
         this.name = name;
         this.address = address;
