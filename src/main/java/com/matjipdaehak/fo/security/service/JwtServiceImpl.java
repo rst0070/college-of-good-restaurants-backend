@@ -57,9 +57,9 @@ public class JwtServiceImpl implements JwtService{
                 "college_id", userDetails.getCollegeId()+""
         );
         return Jwts.builder()
+                .setClaims(claims)
                 .setIssuedAt(this.getDateNow())
                 .setExpiration(this.getExpDate())
-                .setClaims(claims)
                 .signWith(this.SECRET_KEY)
                 .compact();
     }
