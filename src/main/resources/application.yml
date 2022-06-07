@@ -21,7 +21,5 @@ spring:
           starttls:
             enable: true
           auth: true
-
-
 # mail 설정
 

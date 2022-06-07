@@ -56,6 +56,10 @@ public class JwtServiceImpl implements JwtService{
                 "username", userDetails.getUsername(),
                 "college_id", userDetails.getCollegeId()+""
         );
+
+        /**
+         * setClaims를 먼저 설정해줘야한다. 안그러면 그전의 데이터가 날라감.
+         */
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(this.getDateNow())
