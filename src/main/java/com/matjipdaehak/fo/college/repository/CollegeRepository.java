@@ -8,4 +8,6 @@ import com.matjipdaehak.fo.college.model.College;
 public interface CollegeRepository {
 
     College selectByCollegeMailDomain(String collegeMailDomain);
+
+    College selectByCollegeId(int collegeId);
 }

@@ -19,4 +19,9 @@ public class CollegeServiceImpl implements CollegeService{
     public College getCollegeByEmailDomain(String emailDomain) {
         return collegeRepository.selectByCollegeMailDomain(emailDomain);
     }
+
+    @Override
+    public College getCollegeByCollegeId(int collegeId){
+        return collegeRepository.selectByCollegeId(collegeId);
+    }
 }

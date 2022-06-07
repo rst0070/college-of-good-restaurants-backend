@@ -33,4 +33,28 @@ public class CollegeRepositoryImpl implements CollegeRepository{
                 },
                 collegeMailDomain);
     }
+
+
+    @Override
+    public College selectByCollegeId(int collegeId) {
+        String sql = "" +
+                "select * " +
+                "from COLLEGE inner join COLLEGE_MAIL_DOMAIN " +
+                "on COLLEGE.college_id = COLLEGE_MAIL_DOMAIN.COLLEGE_id " +
+                "where COLLEGE.college_id = ? ";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                (rs, rn)->{
+                    College college = new College();
+                    college.setCollegeId(rs.getInt("college_id"));
+                    college.setCollegeName(rs.getString("college_name"));
+                    college.setCollegeMailDomain(rs.getString("college_mail_domain"));
+                    college.setLatitude(rs.getDouble("latitude"));
+                    college.setLongitude(rs.getDouble("longitude"));
+                    college.setDistanceLimitKm(rs.getDouble("distance_limit_km"));
+                    return college;
+                },
+                collegeId);
+    }
 }
