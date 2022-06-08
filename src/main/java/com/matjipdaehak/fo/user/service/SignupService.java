@@ -40,8 +40,8 @@ public interface SignupService {
     /**
      * 이미 가입이 가능한지 모두 확인한 상태에서 DB에 정보만 입력하는 기능
      * @param username
-     * @param password
+     * @param rawPassword
      * @param emailAddr - 사용자 학교 이메일 주소
      */
-    void createNewUser(String username, String password, String nickname, String emailAddr);
+    void createNewUser(String username, String rawPassword, String nickname, String emailAddr);
 }

@@ -3,12 +3,12 @@ import com.matjipdaehak.fo.user.service.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/user-management/login")
@@ -47,9 +47,9 @@ public class LoginController {
         }
 
         String username = decoded[0];
-        String password = decoded[1];
+        String rawPassword = decoded[1];
 
-        String jwt = loginService.getJwtByUsernamePassword(username, password);
+        String jwt = loginService.getJwtByUsernamePassword(username, rawPassword);
         logger.info("user id: "+username+" issued JWT");
         return Map.of("jwt", jwt);
     }

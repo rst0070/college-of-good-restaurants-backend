@@ -17,7 +17,7 @@ alter table college_mail_domain
     
 create table USER(
 	user_id varchar(20) primary key,
-    password varchar(40) not null,
+    password varchar(60) not null,
     nickname varchar(20) not null,
     college_email_address varchar(320) not null unique,
     COLLEGE_id int not null,

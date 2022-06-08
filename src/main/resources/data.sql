@@ -10,10 +10,10 @@ insert into college_mail_domain(COLLEGE_id, college_mail_domain)
 
 insert into user( user_id, password, nickname, college_email_address, COLLEGE_id)
 	values(
-		'wonbinkim', 'password', '김원빈', 'example@uos.ac.kr',
+		'wonbinkim', '$2a$16$nPFM5duMaxPRxB3jjh8PGez3hiHOfHE33xwaXkYX8gm76v1b42eJO', '김원빈', 'example@uos.ac.kr',
 		(select COLLEGE_id from college_mail_domain where college_mail_domain = 'uos.ac.kr')
 	);
-    
+
 insert into place( place_name, place_address, latitude, longitude)
 	values(
 		'테스트용 가게 기꾸초밥',

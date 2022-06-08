@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -21,6 +22,7 @@ public class SignupServiceImpl implements SignupService {
     private final SignupRepository signupRepository;
     private final EmailService emailService;
     private final MatjipDaehakUserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
     private final Pattern emailAddrPattern = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
     private final Random random = new Random();
 
@@ -28,11 +30,13 @@ public class SignupServiceImpl implements SignupService {
     public SignupServiceImpl(
             SignupRepository signupRepository,
             EmailService emailService,
-            MatjipDaehakUserDetailsService userDetailsService
+            MatjipDaehakUserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder
     ){
         this.signupRepository = signupRepository;
         this.emailService = emailService;
         this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     private Date getAuthCodeExpDate(){
@@ -100,12 +104,13 @@ public class SignupServiceImpl implements SignupService {
     /**
      * MatjipDaehakUserdetailsService를 이용한다.
      * @param username - 사용자 id
-     * @param password
+     * @param rawPassword - password 원문
      * @param nickname
      * @param emailAddr - 사용자 학교 이메일 주소
      */
     @Override
-    public void createNewUser(String username, String password, String nickname, String emailAddr) {
+    public void createNewUser(String username, String rawPassword, String nickname, String emailAddr) {
+        String password = passwordEncoder.encode(rawPassword);
         userDetailsService.createNewUser(username, password, nickname, emailAddr);
     }
 }

@@ -1,6 +1,8 @@
 package com.matjipdaehak.fo.user.controller;
+
 import com.matjipdaehak.fo.user.service.SignupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -11,12 +13,15 @@ import java.util.*;
 public class SignupController {
 
     private final SignupService signupService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public SignupController(
-            SignupService signupService
+            SignupService signupService,
+            PasswordEncoder passwordEncoder
     ){
         this.signupService = signupService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.matjipdaehak.fo.user.service;
 
+import com.matjipdaehak.fo.security.PasswordConfig;
 import com.matjipdaehak.fo.security.service.JwtService;
 import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
 import io.jsonwebtoken.JwtException;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -15,22 +17,25 @@ public class LoginServiceImpl implements LoginService {
 
     private final MatjipDaehakUserDetailsService userDetailsService;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public LoginServiceImpl(
             MatjipDaehakUserDetailsService userDetailsService,
-            JwtService jwtService
+            JwtService jwtService,
+            PasswordEncoder passwordEncoder
     ){
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
     @Override
-    public String getJwtByUsernamePassword(String username, String password) throws BadCredentialsException, InternalAuthenticationServiceException {
+    public String getJwtByUsernamePassword(String username, String rawPassword) throws BadCredentialsException, InternalAuthenticationServiceException {
         try {
             MatjipDaehakUserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (!userDetails.getPassword().equals(password)) throw new BadCredentialsException("password incorrect");
+            if (!passwordEncoder.matches(rawPassword, userDetails.getPassword())) throw new BadCredentialsException("password incorrect");
 
             return jwtService.createJwtWithUserDetails(userDetails);
         }catch(UsernameNotFoundException ex){
