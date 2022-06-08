@@ -1,14 +1,13 @@
-package com.matjipdaehak.fo.usermanage.signup.repository;
+package com.matjipdaehak.fo.user.repository;
 
-import com.matjipdaehak.fo.usermanage.signup.model.EmailAuthCode;
+import com.matjipdaehak.fo.user.model.EmailAuthCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Repository
-public class SignupRepositoryImpl implements SignupRepository{
+public class SignupRepositoryImpl implements SignupRepository {
 
     private final JdbcTemplate jdbcTemplate;
 

@@ -1,6 +1,6 @@
-package com.matjipdaehak.fo.userdetails.repository;
+package com.matjipdaehak.fo.user.repository;
 
-import com.matjipdaehak.fo.userdetails.MatjipDaehakUserDetails;
+import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
 
 public interface MatjipDaehakUserDetailsRepository {
 

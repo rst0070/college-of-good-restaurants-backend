@@ -57,7 +57,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .permitAll();
         http
                 .antMatcher(
-                        "/common/college-student-count**"
+                        "/review/add-review"
                 )
                 .addFilterBefore(
                         new JwtAuthenticationFilter(this.authenticationManagerBean()),

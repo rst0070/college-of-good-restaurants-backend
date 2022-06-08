@@ -1,10 +1,7 @@
 package com.matjipdaehak.fo.security.authentication;
 
 import com.matjipdaehak.fo.security.service.JwtService;
-import com.matjipdaehak.fo.userdetails.MatjipDaehakUserDetails;
-import com.matjipdaehak.fo.userdetails.service.MatjipDaehakUserDetailsService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;

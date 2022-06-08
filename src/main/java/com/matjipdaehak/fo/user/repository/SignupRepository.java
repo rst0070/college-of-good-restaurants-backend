@@ -1,8 +1,7 @@
-package com.matjipdaehak.fo.usermanage.signup.repository;
+package com.matjipdaehak.fo.user.repository;
 
-import com.matjipdaehak.fo.usermanage.signup.model.EmailAuthCode;
+import com.matjipdaehak.fo.user.model.EmailAuthCode;
 import org.springframework.dao.DataAccessException;
-import org.springframework.web.client.HttpClientErrorException;
 
 public interface SignupRepository {
 

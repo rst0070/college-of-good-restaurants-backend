@@ -1,6 +1,6 @@
 package com.matjipdaehak.fo.security.authentication;
 
-import com.matjipdaehak.fo.userdetails.MatjipDaehakUserDetails;
+import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 

@@ -1,4 +1,4 @@
-package com.matjipdaehak.fo.usermanage.login.service;
+package com.matjipdaehak.fo.user.service;
 
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;

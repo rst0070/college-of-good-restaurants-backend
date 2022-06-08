@@ -1,8 +1,7 @@
-package com.matjipdaehak.fo.usermanage.login.service;
+package com.matjipdaehak.fo.user.service;
 
 import com.matjipdaehak.fo.security.service.JwtService;
-import com.matjipdaehak.fo.userdetails.MatjipDaehakUserDetails;
-import com.matjipdaehak.fo.userdetails.service.MatjipDaehakUserDetailsService;
+import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class LoginServiceImpl implements LoginService{
+public class LoginServiceImpl implements LoginService {
 
     private final MatjipDaehakUserDetailsService userDetailsService;
     private final JwtService jwtService;

@@ -1,7 +1,7 @@
 package com.matjipdaehak.fo.security.service;
 
 
-import com.matjipdaehak.fo.userdetails.MatjipDaehakUserDetails;
+import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
 import io.jsonwebtoken.JwtException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 /**

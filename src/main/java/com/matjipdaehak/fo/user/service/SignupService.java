@@ -1,4 +1,4 @@
-package com.matjipdaehak.fo.usermanage.signup.service;
+package com.matjipdaehak.fo.user.service;
 
 public interface SignupService {
 

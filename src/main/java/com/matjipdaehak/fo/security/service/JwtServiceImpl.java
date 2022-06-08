@@ -1,7 +1,7 @@
 package com.matjipdaehak.fo.security.service;
 
-import com.matjipdaehak.fo.userdetails.MatjipDaehakUserDetails;
-import com.matjipdaehak.fo.userdetails.service.MatjipDaehakUserDetailsService;
+import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
+import com.matjipdaehak.fo.user.service.MatjipDaehakUserDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;

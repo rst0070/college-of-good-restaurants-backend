@@ -1,4 +1,4 @@
-package com.matjipdaehak.fo.usermanage.signup.model;
+package com.matjipdaehak.fo.user.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

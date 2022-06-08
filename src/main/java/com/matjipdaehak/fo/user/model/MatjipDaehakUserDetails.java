@@ -1,4 +1,4 @@
-package com.matjipdaehak.fo.userdetails;
+package com.matjipdaehak.fo.user.model;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,9 +1,9 @@
-package com.matjipdaehak.fo.userdetails.service;
+package com.matjipdaehak.fo.user.service;
 
 import com.matjipdaehak.fo.college.model.College;
 import com.matjipdaehak.fo.college.service.CollegeService;
-import com.matjipdaehak.fo.userdetails.MatjipDaehakUserDetails;
-import com.matjipdaehak.fo.userdetails.repository.MatjipDaehakUserDetailsRepository;
+import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
+import com.matjipdaehak.fo.user.repository.MatjipDaehakUserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

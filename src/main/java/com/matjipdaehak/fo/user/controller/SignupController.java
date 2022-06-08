@@ -1,5 +1,5 @@
-package com.matjipdaehak.fo.usermanage.signup.controller;
-import com.matjipdaehak.fo.usermanage.signup.service.SignupService;
+package com.matjipdaehak.fo.user.controller;
+import com.matjipdaehak.fo.user.service.SignupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

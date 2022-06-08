@@ -1,5 +1,5 @@
-package com.matjipdaehak.fo.usermanage.login.controller;
-import com.matjipdaehak.fo.usermanage.login.service.LoginService;
+package com.matjipdaehak.fo.user.controller;
+import com.matjipdaehak.fo.user.service.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

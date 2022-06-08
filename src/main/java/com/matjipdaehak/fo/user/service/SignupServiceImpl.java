@@ -1,9 +1,8 @@
-package com.matjipdaehak.fo.usermanage.signup.service;
+package com.matjipdaehak.fo.user.service;
 
 import com.matjipdaehak.fo.common.service.EmailService;
-import com.matjipdaehak.fo.userdetails.service.MatjipDaehakUserDetailsService;
-import com.matjipdaehak.fo.usermanage.signup.model.EmailAuthCode;
-import com.matjipdaehak.fo.usermanage.signup.repository.SignupRepository;
+import com.matjipdaehak.fo.user.model.EmailAuthCode;
+import com.matjipdaehak.fo.user.repository.SignupRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import java.util.*;
 import java.util.regex.*;
 
 @Service
-public class SignupServiceImpl implements SignupService{
+public class SignupServiceImpl implements SignupService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SignupRepository signupRepository;
