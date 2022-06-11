@@ -2,6 +2,7 @@ package com.matjipdaehak.fo.place.service;
 
 import com.matjipdaehak.fo.exception.DataAlreadyExistException;
 import com.matjipdaehak.fo.place.model.Place;
+import java.util.*;
 
 public interface PlaceService {
 
@@ -11,4 +12,6 @@ public interface PlaceService {
      * @param place
      */
     void createNewPlace(Place place) throws DataAlreadyExistException;
+
+    List<Place> searchPlaceByKeyword(String keyword, int collegeId);
 }

@@ -1,6 +1,24 @@
 insert into college(college_name, latitude, longitude)
 	values('서울시립대학교', 37.584828300773886, 127.05773316246166);
 
+insert into college(college_name, latitude, longitude)
+    values('경희대학교', 37.584828300773886, 127.05773316246166);
+
+insert into college(college_name, latitude, longitude)
+    values('중앙대학교', 37.584828300773886, 127.05773316246166);
+
+insert into college(college_name, latitude, longitude)
+    values('고려대학교', 37.584828300773886, 127.05773316246166);
+
+insert into college(college_name, latitude, longitude)
+    values('한양대학교', 37.584828300773886, 127.05773316246166);
+
+insert into college(college_name, latitude, longitude)
+    values('한국외국어대학교', 37.584828300773886, 127.05773316246166);
+
+insert into college(college_name, latitude, longitude)
+    values('건국대학교', 37.584828300773886, 127.05773316246166);
+
 insert into college_mail_domain(COLLEGE_id, college_mail_domain)
 	values(
 		(select college_id from college where college_name = '서울시립대학교'),

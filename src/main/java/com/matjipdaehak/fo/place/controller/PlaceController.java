@@ -57,4 +57,37 @@ public class PlaceController {
         }
         return null;
     }
+
+    /**
+     * 장소에 대해 키워드 서칭
+     * 키워드와 id로 확인
+     * {
+     *     "keyword" : "고기",
+     *     "college-id" : "123"
+     * }
+     *
+     * 응답형식
+     * [
+     *     {
+     *         "placeId": 1,
+     *         "kakaoPlaceId": "16955698",
+     *         "name": "테스트용 가게 기꾸초밥",
+     *         "address": "경기 구리시 안골로 91 기꾸초밥",
+     *         "latitude": 38.0,
+     *         "longitude": 128.0,
+     *         "phone": null,
+     *         "category": "초밥"
+     *     }
+     * ]
+     *
+     * @return
+     */
+    @RequestMapping("/search-place")
+    public List<Place> searchPlace(@RequestBody Map<String, String> req){
+        String keyword = req.get("keyword");
+        int collegeId = Integer.parseInt(req.get("college-id"));
+
+        List<Place> placeList = placeService.searchPlaceByKeyword(keyword, collegeId);
+        return placeList;
+    }
 }

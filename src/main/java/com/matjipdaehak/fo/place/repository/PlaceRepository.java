@@ -1,6 +1,7 @@
 package com.matjipdaehak.fo.place.repository;
 
 import com.matjipdaehak.fo.place.model.Place;
+import java.util.*;
 
 public interface PlaceRepository {
 
@@ -17,4 +18,6 @@ public interface PlaceRepository {
      * @return Place
      */
     Place selectPlace(int placeId);
+
+    List<Place> keywordSearchPlace(String keyword, int collegeId);
 }

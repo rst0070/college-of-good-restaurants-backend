@@ -6,6 +6,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class PlaceRepositoryImpl implements PlaceRepository{
 
@@ -86,5 +88,35 @@ public class PlaceRepositoryImpl implements PlaceRepository{
                             rs.getString("category")
                 ),
                 placeId);
+    }
+
+
+    @Override
+    public List<Place> keywordSearchPlace(String keyword, int collegeId) {
+        String sql = "SELECT * " +
+                "FROM PLACE, PLACE_LIST_AT_COLLEGE, KAKAO_PLACE " +
+                "WHERE " +
+                "place_list_at_college.COLLEGE_id = ? " +
+                "   and place_list_at_college.PLACE_id = place.place_id " +
+                "   and kakao_place.PLACE_id = place.place_id " +
+                "   and ( kakao_place.category like ? or place.place_name like ? ) ";
+
+        keyword = '%' + keyword + '%';
+        return jdbcTemplate.query(sql,
+                (rs, rn) ->{
+                    return new Place(
+                            rs.getInt("place_id"),
+                            rs.getString("kakao_place_id"),
+                            rs.getString("place_name"),
+                            rs.getString("place_address"),
+                            rs.getDouble("latitude"),
+                            rs.getDouble("longitude"),
+                            rs.getString("phone"),
+                            rs.getString("category")
+                    );
+                },
+                collegeId,
+                keyword,
+                keyword);
     }
 }

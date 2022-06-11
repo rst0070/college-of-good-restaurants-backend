@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PlaceServiceImpl implements PlaceService{
 
@@ -30,5 +32,10 @@ public class PlaceServiceImpl implements PlaceService{
         }catch(DataAccessException ex){
             throw new DataAlreadyExistException(ex.getMessage());
         }
+    }
+
+    @Override
+    public List<Place> searchPlaceByKeyword(String keyword, int collegeId) {
+        return placeRepository.keywordSearchPlace(keyword, collegeId);
     }
 }

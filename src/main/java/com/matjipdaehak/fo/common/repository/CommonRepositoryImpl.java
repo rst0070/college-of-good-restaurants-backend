@@ -22,12 +22,16 @@ public class CommonRepositoryImpl implements CommonRepository{
     }
 
 
+    /**
+     * 학생이 없는 경우도 가져오도록 left join으로 함.
+     * @return
+     */
     @Override
     public Map<String, Integer> getNumberOfStudentsInEachCollege() {
         HashMap<String, Integer> resultMap = new HashMap<String, Integer>();
         String sql =
                 "select COLLEGE.college_name as college_name, count(USER.user_id) as cnt " +
-                        "from COLLEGE inner join USER " +
+                        "from COLLEGE left join USER " +
                         "on COLLEGE.college_id = USER.COLLEGE_id " +
                         "group by COLLEGE.college_id";
 
