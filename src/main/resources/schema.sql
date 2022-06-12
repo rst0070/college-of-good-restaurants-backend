@@ -53,6 +53,7 @@ create table KAKAO_PLACE(
 	PLACE_id int primary key,
     kakao_place_id tinytext not null,
     category tinytext not null,
+    place_image_url varchar(2000),
     foreign key (PLACE_id) references PLACE (place_id)
 );
 
@@ -72,5 +73,14 @@ create table REVIEW(
     constraint review_rating_check check( rating in (1, 2, 3, 4, 5)),
     foreign key (PLACE_id) references PLACE(place_id),
     foreign key (USER_id) references USER(user_id)
+);
+
+create table REVIEW_IMAGE_LIST(
+    REVIEW_PLACE_id int,
+    REVIEW_USER_id varchar(20),
+    image_url varchar(2000) not null,
+    primary key (REVIEW_PLACE_id, REVIEW_USER_id),
+    foreign key (REVIEW_PLACE_id) references REVIEW(PLACE_id),
+    foreign key (REVIEW_USER_id) references REVIEW(USER_id)
 );
 

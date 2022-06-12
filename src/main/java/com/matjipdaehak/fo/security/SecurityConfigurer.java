@@ -56,9 +56,12 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 )
                 .permitAll();
         http
-                .antMatcher(
+                .requestMatchers()
+                    .antMatchers(
                         "/review/add-review"
-                )
+                        , "/place/add-place"
+                    )
+                .and()
                 .addFilterBefore(
                         new JwtAuthenticationFilter(this.authenticationManagerBean()),
                         BasicAuthenticationFilter.class
