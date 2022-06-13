@@ -1,5 +1,9 @@
 package com.matjipdaehak.fo.review.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.matjipdaehak.fo.review.model.Review;
 import com.matjipdaehak.fo.review.service.ReviewService;
 import org.slf4j.*;
@@ -31,21 +35,31 @@ public class ReviewController {
      *     "user-id" : "wonbinkim",
      *     "post-date":"2022-06-01",
      *     "post-text":"테스트 리뷰",
-     *     "rating":"4"
+     *     "rating":"4",
+     *     "image-urls":[]
      * }
-     * @param req
+     * @param reqBody - json형태의 요청 내용
      */
     @RequestMapping("/add-review")
-    public Map<String, String> addReview(@RequestBody Map<String, String> req, HttpServletResponse res){
+    public Map<String, String> addReview(@RequestBody String reqBody, HttpServletResponse res){
         try{
-            Date postDate = new SimpleDateFormat("yyyy-mm-dd").parse(req.get("post-date"));
+            logger.info(reqBody);
+
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectReader arrayToListReader = mapper.readerFor(new TypeReference<List<String>>() {});
+            JsonNode json = mapper.readTree(reqBody);
+            Date postDate = new SimpleDateFormat("yyyy-mm-dd").parse(json.get("post-date").asText());
+
+
             Review review = new Review(
-                    Integer.parseInt(req.get("place-id")),
-                    req.get("user-id"),
+                    json.get("place-id").asInt(),
+                    json.get("user-id").asText(),
                     postDate,
-                    req.get("post-text"),
-                    Integer.parseInt(req.get("rating"))
+                    json.get("post-text").asText(),
+                    json.get("rating").asInt(),
+                    arrayToListReader.readValue(json.get("image-urls"))
                     );
+
             reviewService.createNewReview(review);
         }catch(Exception ex){
             logger.info(ex.getMessage());

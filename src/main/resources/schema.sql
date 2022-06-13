@@ -79,7 +79,7 @@ create table REVIEW_IMAGE_LIST(
     REVIEW_PLACE_id int,
     REVIEW_USER_id varchar(20),
     image_url varchar(2000) not null,
-    primary key (REVIEW_PLACE_id, REVIEW_USER_id),
+    primary key (REVIEW_PLACE_id, REVIEW_USER_id, image_url),
     foreign key (REVIEW_PLACE_id) references REVIEW(PLACE_id),
     foreign key (REVIEW_USER_id) references REVIEW(USER_id)
 );

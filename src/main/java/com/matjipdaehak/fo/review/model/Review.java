@@ -2,8 +2,7 @@ package com.matjipdaehak.fo.review.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -21,6 +20,7 @@ public class Review {
     private Date postDate;
     private String postText;
     private int rating;
+    private List<String> imageUrls;
 
     /**
      *
@@ -35,12 +35,14 @@ public class Review {
             String userId,
             Date postDate,
             String postText,
-            int rating
+            int rating,
+            List<String> imageUrls
     ){
         this.placeId = placeId;
         this.userId = userId;
         this.postDate = postDate;
         this.postText = postText;
         this.rating = rating;
+        this.imageUrls = imageUrls;
     }
 }
