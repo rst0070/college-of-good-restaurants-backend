@@ -1,6 +1,8 @@
 package com.matjipdaehak.fo.common.service;
-import java.util.Map;
+import com.matjipdaehak.fo.common.model.CollegeStudentCount;
+import java.util.*;
+
 public interface CommonService {
 
-    Map<String, Integer> getNumberOfStudentsInEachCollege();
+    List<CollegeStudentCount> getNumberOfStudentsInEachCollege();
 }
