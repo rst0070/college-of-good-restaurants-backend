@@ -1,5 +1,6 @@
 package com.matjipdaehak.fo.place.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,7 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Place {
 
+    @JsonProperty("place-id")
     private int placeId;
+    @JsonProperty("kakao-place-id")
     private String kakaoPlaceId;
     private String name;
 
@@ -17,7 +20,19 @@ public class Place {
     private double longitude;
     private String phone;
     private String category;
-
+    @JsonProperty("image-url")
+    private String imageUrl;
+    /**
+     * 기존에 DB에 존재하는 Place를 매핑시킬때 사용할 생성자.
+     * @param placeId
+     * @param kakaoPlaceId
+     * @param name
+     * @param address
+     * @param latitude
+     * @param longitude
+     * @param phone
+     * @param category
+     */
     public Place(
             int placeId,
             String kakaoPlaceId,
@@ -26,7 +41,8 @@ public class Place {
             double latitude,
             double longitude,
             String phone,
-            String category
+            String category,
+            String imageUrl
     ){
         this(
                 kakaoPlaceId,
@@ -35,11 +51,23 @@ public class Place {
                 latitude,
                 longitude,
                 phone,
-                category
+                category,
+                imageUrl
         );
         this.placeId = placeId;
     }
 
+    /**
+     * Place를 DB에 새로 등록할 때 필요한 생성자.
+     * Place id는 DB에서 auto increment로 생성된다.
+     * @param kakaoPlaceId
+     * @param name
+     * @param address
+     * @param latitude
+     * @param longitude
+     * @param phone
+     * @param category
+     */
     public Place(
             String kakaoPlaceId,
             String name,
@@ -47,7 +75,8 @@ public class Place {
             double latitude,
             double longitude,
             String phone,
-            String category
+            String category,
+            String imageUrl
     ){
         this.kakaoPlaceId = kakaoPlaceId;
         this.name = name;

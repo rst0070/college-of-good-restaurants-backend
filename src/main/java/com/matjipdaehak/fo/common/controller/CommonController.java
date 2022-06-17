@@ -1,10 +1,17 @@
 package com.matjipdaehak.fo.common.controller;
 
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.matjipdaehak.fo.common.model.CollegeStudentCount;
 import com.matjipdaehak.fo.common.service.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -20,7 +27,6 @@ public class CommonController {
 
     /**
      * 전체 학교의 각 학생수를 json 형식으로 반환
-     * 이름이 같은 학교가 있을까?? -> 있다면 문제발생
      * [
      *  {"collegeName" : "서울시립대학교", "numberOfStudents" : "100"},...
      * ]

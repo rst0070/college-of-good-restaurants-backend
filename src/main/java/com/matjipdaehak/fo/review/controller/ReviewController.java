@@ -21,12 +21,14 @@ import java.text.SimpleDateFormat;
 public class ReviewController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final ReviewService reviewService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public ReviewController(ReviewService reviewService){
+    public ReviewController(ReviewService reviewService,
+                            ObjectMapper objectMapper){
         this.reviewService = reviewService;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -45,9 +47,8 @@ public class ReviewController {
         try{
             logger.info(reqBody);
 
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectReader arrayToListReader = mapper.readerFor(new TypeReference<List<String>>() {});
-            JsonNode json = mapper.readTree(reqBody);
+            ObjectReader arrayToListReader = this.objectMapper.readerFor(new TypeReference<List<String>>() {});
+            JsonNode json = this.objectMapper.readTree(reqBody);
             Date postDate = new SimpleDateFormat("yyyy-mm-dd").parse(json.get("post-date").asText());
 
 

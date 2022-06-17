@@ -31,7 +31,8 @@ public class PlaceController {
      * 	"place_url": "http://place.map.kakao.com/22225498",
      * 	"road_address_name": "경남 창녕군 이방면 이방로 623",
      * 	"x": "128.383585226179",
-     * 	"y": "35.5777087822771"
+     * 	"y": "35.5777087822771",
+     * 	"image-url":"https://asdadasd"
      * }
      * 예외를 세분화해 처리할 필요가 있음. ex. 서버 내부오류 or 입력데이터 오류
      * @param req
@@ -47,7 +48,8 @@ public class PlaceController {
                     Double.parseDouble(req.get("y")),
                     Double.parseDouble(req.get("x")),
                     req.get("phone"),
-                    req.get("category_name")
+                    req.get("category_name"),
+                    req.get("image-url")
             );
             placeService.createNewPlace(place);
         }catch(Exception ex){
@@ -76,7 +78,8 @@ public class PlaceController {
      *         "latitude": 38.0,
      *         "longitude": 128.0,
      *         "phone": null,
-     *         "category": "초밥"
+     *         "category": "초밥",
+     *         "image-url":"asdasdasd"
      *     }
      * ]
      *

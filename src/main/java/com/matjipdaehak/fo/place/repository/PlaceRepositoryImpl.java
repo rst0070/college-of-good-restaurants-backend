@@ -42,8 +42,8 @@ public class PlaceRepositoryImpl implements PlaceRepository{
                 "WHERE place_name = ? and place_address = ? ";
 
         String insertToKakaoPlace = "" +
-                "insert into KAKAO_PLACE(PLACE_id, kakao_place_id, category) " +
-                "values(?, ?, ?) ";
+                "insert into KAKAO_PLACE(PLACE_id, kakao_place_id, category, place_image_url) " +
+                "values(?, ?, ?, ?) ";
 
         jdbcTemplate.update(insertToPlace,
                 place.getName(),
@@ -62,14 +62,15 @@ public class PlaceRepositoryImpl implements PlaceRepository{
         jdbcTemplate.update(insertToKakaoPlace,
                 placeId,
                 place.getKakaoPlaceId(),
-                place.getCategory());
+                place.getCategory(),
+                place.getImageUrl());
     }
 
     @Override
     public Place selectPlace(int placeId) {
         String selectPlace = "" +
                 "SELECT " +
-                "   place_name, place_address, latitude, longitude, phone, kakao_place_id, category " +
+                "   place_name, place_address, latitude, longitude, phone, kakao_place_id, category, place_image_url " +
                 "FROM " +
                 "   PLACE inner join KAKAO_PLACE " +
                 "   ON PLACE.place_id = KAKAO_PLACE.PLACE_id " +
@@ -85,7 +86,8 @@ public class PlaceRepositoryImpl implements PlaceRepository{
                             rs.getDouble("latitude"),
                             rs.getDouble("longitude"),
                             rs.getString("phone"),
-                            rs.getString("category")
+                            rs.getString("category"),
+                            rs.getString("place_image_url")
                 ),
                 placeId);
     }
@@ -112,7 +114,8 @@ public class PlaceRepositoryImpl implements PlaceRepository{
                             rs.getDouble("latitude"),
                             rs.getDouble("longitude"),
                             rs.getString("phone"),
-                            rs.getString("category")
+                            rs.getString("category"),
+                            rs.getString("place_image_url")
                     );
                 },
                 collegeId,
