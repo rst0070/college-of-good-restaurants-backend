@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Place {
 
-    @JsonProperty("place-id")
+    @JsonProperty("place_id")
     private int placeId;
-    @JsonProperty("kakao-place-id")
+    @JsonProperty("kakao_place_id")
     private String kakaoPlaceId;
     private String name;
 
@@ -20,7 +20,7 @@ public class Place {
     private double longitude;
     private String phone;
     private String category;
-    @JsonProperty("image-url")
+    @JsonProperty("image_url")
     private String imageUrl;
     /**
      * 기존에 DB에 존재하는 Place를 매핑시킬때 사용할 생성자.
