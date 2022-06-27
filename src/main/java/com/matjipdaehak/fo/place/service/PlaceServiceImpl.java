@@ -6,6 +6,7 @@ import com.matjipdaehak.fo.place.repository.PlaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class PlaceServiceImpl implements PlaceService{
      * @throws DataAlreadyExistException
      */
     @Override
+    @Transactional
     public void createNewPlace(Place place) throws DataAlreadyExistException {
         try{
             placeRepository.insertPlace(place);

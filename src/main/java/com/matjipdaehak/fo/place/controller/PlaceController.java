@@ -75,8 +75,8 @@ public class PlaceController {
      *         "kakao_place_id": "16955698",
      *         "name": "테스트용 가게 기꾸초밥",
      *         "address": "경기 구리시 안골로 91 기꾸초밥",
-     *         "latitude": 38.0,
      *         "longitude": 128.0,
+     *         "latitude": 38.0,
      *         "phone": null,
      *         "category": "초밥",
      *         "image_url":"asdasdasd"
