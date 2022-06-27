@@ -1,7 +1,9 @@
 package com.matjipdaehak.fo.common.repository;
+import com.matjipdaehak.fo.common.model.CollegeStudentCount;
+
 import java.util.*;
 
 public interface CommonRepository {
 
-    Map<String, Integer> getNumberOfStudentsInEachCollege();
+    List<CollegeStudentCount> getNumberOfStudentsInEachCollege();
 }

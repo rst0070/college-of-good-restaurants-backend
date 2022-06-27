@@ -19,14 +19,6 @@ public class CommonServiceImpl implements CommonService{
 
     @Override
     public List<CollegeStudentCount> getNumberOfStudentsInEachCollege(){
-        Map<String, Integer> collegeMap =  commonRepository.getNumberOfStudentsInEachCollege();
-        List<CollegeStudentCount> list = new LinkedList<CollegeStudentCount>();
-        collegeMap.forEach((String collegeName, Integer count) ->{
-            CollegeStudentCount csc = new CollegeStudentCount();
-            csc.setCollegeName(collegeName);
-            csc.setNumberOfStudents(count);
-            list.add(csc);
-        });
-        return list;
+        return commonRepository.getNumberOfStudentsInEachCollege();
     }
 }
