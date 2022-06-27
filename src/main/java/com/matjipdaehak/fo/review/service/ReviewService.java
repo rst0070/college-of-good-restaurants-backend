@@ -1,6 +1,7 @@
 package com.matjipdaehak.fo.review.service;
 
 import com.matjipdaehak.fo.review.model.Review;
+import java.util.*;
 
 public interface ReviewService {
 
@@ -9,4 +10,11 @@ public interface ReviewService {
      * @param review
      */
     void createNewReview(Review review);
+
+    /**
+     * place id에 해당하는 리뷰들을 리스트로 가져온다
+     * @param placeId
+     * @return
+     */
+    List<Review> getReviewsByPlaceId(int placeId);
 }

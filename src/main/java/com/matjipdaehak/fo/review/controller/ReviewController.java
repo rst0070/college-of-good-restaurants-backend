@@ -1,20 +1,16 @@
 package com.matjipdaehak.fo.review.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 import com.matjipdaehak.fo.review.model.Review;
 import com.matjipdaehak.fo.review.service.ReviewService;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-import java.text.SimpleDateFormat;
 
 @RestController
 @RequestMapping("/review")
@@ -33,40 +29,46 @@ public class ReviewController {
 
     /**
      * {
-     *     "place-id" : "1",
-     *     "user-id" : "wonbinkim",
-     *     "post-date":"2022-06-01",
-     *     "post-text":"테스트 리뷰",
+     *     "place_id" : "1",
+     *     "user_id" : "wonbinkim",
+     *     "post_date":"2022-06-01",
+     *     "post_text":"테스트 리뷰",
      *     "rating":"4",
-     *     "image-urls":[]
+     *     "image_urls":[]
      * }
-     * @param reqBody - json형태의 요청 내용
+     * @param json - json형태의 요청 내용
      */
     @RequestMapping("/add-review")
-    public Map<String, String> addReview(@RequestBody String reqBody, HttpServletResponse res){
+    public Map<String, String> addReview(@RequestBody String json, HttpServletResponse res){
         try{
-            logger.info(reqBody);
-
-            ObjectReader arrayToListReader = this.objectMapper.readerFor(new TypeReference<List<String>>() {});
-            JsonNode json = this.objectMapper.readTree(reqBody);
-            Date postDate = new SimpleDateFormat("yyyy-mm-dd").parse(json.get("post-date").asText());
-
-
-            Review review = new Review(
-                    json.get("place-id").asInt(),
-                    json.get("user-id").asText(),
-                    postDate,
-                    json.get("post-text").asText(),
-                    json.get("rating").asInt(),
-                    arrayToListReader.readValue(json.get("image-urls"))
-                    );
-
+            Review review = objectMapper.readValue(json, Review.class);
             reviewService.createNewReview(review);
+        }catch (JsonMappingException jex){
+            logger.info(jex.getMessage());
         }catch(Exception ex){
             logger.info(ex.getMessage());
             res.setStatus(500);
             return Map.of("message", ex.getMessage());
         }
         return null;
+    }
+
+    /**
+     * 요청
+     * {
+     *     "place_id":12313
+     * }
+     *
+     * 응답
+     * [
+     *  {}
+     * ]
+     * @param json
+     * @return
+     */
+    @RequestMapping("/get-reviews")
+    public List<Review> getReviews(@RequestBody JsonNode json){
+        int placeId = Integer.parseInt(json.get("place_id").toString());
+        return reviewService.getReviewsByPlaceId(placeId);
     }
 }
