@@ -1,10 +1,9 @@
 package com.matjipdaehak.fo.college.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.matjipdaehak.fo.college.model.College;
 import com.matjipdaehak.fo.college.service.CollegeService;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 /**
@@ -48,5 +47,20 @@ public class CollegeController {
                 "y", college.getLatitude()+"",
                 "radius", college.getDistanceLimitKm()+""
         );
+    }
+
+    /**
+     * 학교 정보 객체의 내용을 모두 전달
+     * 요청:
+     * {
+     *     "college_id" : "1"
+     * }
+     * @param json
+     * @return
+     */
+    @PostMapping("/get-college")
+    public College getCollege(@RequestBody JsonNode json){
+        int collegeId = json.get("college_id").asInt();
+        return this.collegeService.getCollegeByCollegeId(collegeId);
     }
 }
