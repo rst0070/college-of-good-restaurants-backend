@@ -14,4 +14,6 @@ public interface PlaceService {
     void createNewPlace(Place place) throws DataAlreadyExistException;
 
     List<Place> searchPlaceByKeyword(String keyword, int collegeId);
+
+    Place getPlaceByPlaceId(int placeId);
 }

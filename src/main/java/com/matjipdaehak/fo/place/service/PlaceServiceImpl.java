@@ -40,4 +40,9 @@ public class PlaceServiceImpl implements PlaceService{
     public List<Place> searchPlaceByKeyword(String keyword, int collegeId) {
         return placeRepository.keywordSearchPlace(keyword, collegeId);
     }
+
+    @Override
+    public Place getPlaceByPlaceId(int placeId) {
+        return this.placeRepository.selectPlace(placeId);
+    }
 }

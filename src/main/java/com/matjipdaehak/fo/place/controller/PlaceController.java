@@ -1,5 +1,6 @@
 package com.matjipdaehak.fo.place.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.*;
 import com.matjipdaehak.fo.place.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,5 +93,15 @@ public class PlaceController {
 
         List<Place> placeList = placeService.searchPlaceByKeyword(keyword, collegeId);
         return placeList;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @PostMapping("/get-place")
+    public Place getPlace(@RequestBody JsonNode json){
+        int placeId = json.get("place_id").asInt();
+        return placeService.getPlaceByPlaceId(placeId);
     }
 }

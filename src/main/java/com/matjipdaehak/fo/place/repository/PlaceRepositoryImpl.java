@@ -74,7 +74,7 @@ public class PlaceRepositoryImpl implements PlaceRepository{
                 "FROM " +
                 "   PLACE inner join KAKAO_PLACE " +
                 "   ON PLACE.place_id = KAKAO_PLACE.PLACE_id " +
-                "WHERE place_id = ? ";
+                "WHERE PLACE.place_id = ? ";
 
 
         return jdbcTemplate.queryForObject(selectPlace,
