@@ -14,10 +14,10 @@ public interface SignupRepository {
 
     /**
      * 해당하는 이메일 주소를 가진 사용자가 존재하는가
-     * @param emailAddr -
+     * @param emailAddr - 이메일 주소
      * @return true - 존재함. false - 없음
      */
-    boolean isEmailTaken(String emailAddr);
+    boolean isEmailTakenByUser(String emailAddr);
 
     /**
      * 해당하는 userId가 이미 사용되었는가?
@@ -27,11 +27,25 @@ public interface SignupRepository {
     boolean isUserIdTaken(String userId);
 
     /**
+     * EMAIL_AUTH_CODE 테이블에 해당하는 이메일이 존재하는지 확인
+     * @param emailAddr
+     * @return true - 해당 이메일 존재, false - 해당 이메일 존재하지 않음
+     */
+    boolean isEmailTakenAsAuthCode(String emailAddr);
+
+    /**
      * Email Auth Code를 db에 저장
      * @param emailAuthCode - 저장하려는 email auth code
      * @throws DataAccessException - 데이터의 오류 or 이미 해당 코드가 존재하는 경루
      */
     void insertEmailAuthCode(EmailAuthCode emailAuthCode) throws DataAccessException;
+
+    /**
+     * 이미 email 주소에 대한 auth code가 발급된 경우 이를 수정하기위해 auth code값을 update한다.
+     * @param emailAuthCode
+     * @throws DataAccessException
+     */
+    void updateEmailAuthCode(EmailAuthCode emailAuthCode) throws DataAccessException;
 
     /**
      * 이메일 주소에 해당되는 인증코드객체를 가져온다.

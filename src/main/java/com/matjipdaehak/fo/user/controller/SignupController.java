@@ -30,7 +30,7 @@ public class SignupController {
      * @return
      */
     @PostMapping("/send-auth-code")
-    public Map<String, String> sendAuthCode(@RequestBody Map<String, Object> reqBody, HttpServletResponse res){
+    public Map<String, String> sendAuthCode(@RequestBody Map<String, Object> reqBody, HttpServletResponse res) throws Exception{
 
         String email = reqBody.get("email").toString();
 
@@ -39,11 +39,7 @@ public class SignupController {
             return Map.of("message", "The email address is not possible");
         }
 
-        if(!signupService.sendAuthCodeToEmail(email)){
-            res.setStatus(500);
-            return Map.of("message", "error occured while sending email");
-        }
-
+        signupService.sendAuthCodeToEmail(email);
         return Map.of("message","sended auth code");
     }
 

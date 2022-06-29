@@ -26,7 +26,7 @@ public interface SignupService {
      * @param emailAddress
      * @return true - 발송 성공. false - 발송 실패
      */
-    boolean sendAuthCodeToEmail(String emailAddress);
+    void sendAuthCodeToEmail(String emailAddress);
 
     /**
      * 특정 이메일로 발송된 authentication code가 맞는지 확인한다.
