@@ -24,7 +24,7 @@ public class JwtServiceImpl implements JwtService{
     private final String SECRET_STRING = "b4P%YnnNOgl7:m({iJg?P|B4ND;-Ydb4P%YnnNOgl7:m({iJg?P|B4ND;-Yd";
     private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET_STRING.getBytes(StandardCharsets.UTF_8));
     private final TimeZone TIME_ZONE = TimeZone.getTimeZone("GMT");
-    private final int EXP_MINUTES = 1;
+    private final int EXP_MINUTES = 10;
     private final String ISSUER = "맛집대학";
 
     @Autowired
