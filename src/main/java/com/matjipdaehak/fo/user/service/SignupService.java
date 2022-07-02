@@ -22,6 +22,14 @@ public interface SignupService {
     boolean isUserIdPossible(String userId);
 
     /**
+     * 닉네임이 사용가능한지 확인
+     * @param nickname
+     * @param collegeEmailDomain
+     * @return
+     */
+    boolean isUserNicknamePossible(String nickname, String collegeEmailDomain);
+
+    /**
      * 인증코드 이메일 발송. 인증코드는 랜덤으로 생성되며 DB에 저장됨
      * @param emailAddress
      * @return true - 발송 성공. false - 발송 실패

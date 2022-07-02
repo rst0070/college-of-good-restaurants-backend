@@ -80,6 +80,26 @@ public class SignupController {
     }
 
     /**
+     * 학교 이메일 주소와 닉네임으로 요청하면 해당 닉네임이 해당 학교에서 사용가능한지 확인한다.
+     * @param json
+     * {
+     *  "email" : "rst0070@uos.ac.kr",
+     *  "nickname" : "asdasddd"
+     * }
+     * @return
+     */
+    @RequestMapping("/check-user-nickname")
+    public Map<String, String> checkUserNickname(@RequestBody JsonNode json, HttpServletResponse res){
+        String collegeEmailDomain = json.get("email").asText().split("@")[1];
+        String userNickname = json.get("nickname").asText();
+        if(!signupService.isUserNicknamePossible(userNickname, collegeEmailDomain)){
+            res.setStatus(406);
+            return Map.of("message", "the nickname is not possible to use");
+        }
+        return Map.of("message", "nickname is possible to use");
+    }
+
+    /**
      *
      * 인증코드확인
      * 아이디확인

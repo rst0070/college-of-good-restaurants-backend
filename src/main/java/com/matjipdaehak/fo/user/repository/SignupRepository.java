@@ -27,6 +27,14 @@ public interface SignupRepository {
     boolean isUserIdTaken(String userId);
 
     /**
+     * 닉네임이 사용되고 있는지 확인한다.
+     * @param nickname
+     * @param collegeId
+     * @return
+     */
+    boolean isUserNicknameTaken(String nickname, int collegeId);
+
+    /**
      * EMAIL_AUTH_CODE 테이블에 해당하는 이메일이 존재하는지 확인
      * @param emailAddr
      * @return true - 해당 이메일 존재, false - 해당 이메일 존재하지 않음

@@ -54,6 +54,20 @@ public class SignupRepositoryImpl implements SignupRepository {
     }
 
     @Override
+    public boolean isUserNicknameTaken(String nickname, int collegeId) {
+        String sql = "" +
+                "SELECT EXISTS( " +
+                "   SELECT 1 " +
+                "   FROM USER " +
+                "   WHERE nickname = ? and COLLEGE_id = ? " +
+                ") ";
+        return jdbcTemplate.queryForObject(sql,
+                (rs, rn) -> rs.getBoolean(1),
+                nickname,
+                collegeId);
+    }
+
+    @Override
     public boolean isEmailTakenAsAuthCode(String emailAddr) {
         String sql = "" +
                 "SELECT " +
