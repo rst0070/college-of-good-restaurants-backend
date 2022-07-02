@@ -16,12 +16,20 @@ public interface ReviewRepository {
     Review selectReview(int placeId, String userId) throws DataAccessException;
 
     /**
+     * 특정 PLACE의 리뷰수를 가져온다.
+     * @param placeId - 특정 PLACE
+     * @return int - 리뷰수
+     * @throws DataAccessException
+     */
+    int numberOfReviewOfPlace(int placeId) throws DataAccessException;
+
+    /**
      * place id를 통해 해당하는 리뷰를 가져온다.
      * @param placeId
      * @return
      * @throws DataAccessException
      */
-    List<Review> selectReviewByPlaceId(int placeId) throws DataAccessException;
+    List<Review> selectReviewByPlaceId(int placeId, int page) throws DataAccessException;
 
     /**
      * review를 DB에 저장한다.(REVIEW와 REVIEW_IMAGE_LIST테이블에)

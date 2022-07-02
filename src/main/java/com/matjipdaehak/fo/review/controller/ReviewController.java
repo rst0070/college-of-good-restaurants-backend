@@ -54,9 +54,26 @@ public class ReviewController {
     }
 
     /**
+     * @param json - json 형태의 요청
+     * 요청 형태:
+     *       {"place_id" : "1"}
+     * @return Map
+     * 응답형태:
+     *        {
+     *            "pages" : "5"
+     *        }
+     */
+    @GetMapping("/get-pages")
+    public Map<String, String> getNumOfPagesOfReview(@RequestBody JsonNode json){
+        int placeId = json.get("place_id").asInt();
+        return Map.of("pages", reviewService.numberOfPagesOfReviewOfPlace(placeId)+"");
+    }
+
+    /**
      * 요청
      * {
-     *     "place_id":12313
+     *     "place_id":"12313"
+     *     "page":"1"
      * }
      *
      * 응답
@@ -68,7 +85,8 @@ public class ReviewController {
      */
     @RequestMapping("/get-reviews")
     public List<Review> getReviews(@RequestBody JsonNode json){
-        int placeId = Integer.parseInt(json.get("place_id").toString());
-        return reviewService.getReviewsByPlaceId(placeId);
+        int placeId = json.get("place_id").asInt();
+        int page = json.get("page").asInt();
+        return reviewService.getReviewsByPlaceId(placeId, page);
     }
 }

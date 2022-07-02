@@ -71,25 +71,43 @@ public class ReviewRepositoryImpl implements ReviewRepository{
         return result;
     }
 
+    @Override
+    public int numberOfReviewOfPlace(int placeId) throws DataAccessException {
+        String sql = "" +
+                "SELECT count(PLACE_id) as count " +
+                "FROM REVIEW " +
+                "WHERE PLACE_id = ? ";
+        return jdbcTemplate.queryForObject(
+                sql,
+                (rs, rn) -> rs.getInt("count"),
+                placeId
+        );
+    }
+
     /**
      * selectReview 메소드를 이용해 place id에 해당하는 Review객체들을 하나씩 생성
+     * 이때 pagination 적용
+     * 한 페이지에는 10개의 리뷰가 들어간다.
      * @param placeId
      * @return
      * @throws DataAccessException
      */
     @Override
-    public List<Review> selectReviewByPlaceId(int placeId) throws DataAccessException {
+    public List<Review> selectReviewByPlaceId(int placeId, int page) throws DataAccessException {
         String selectReviews = "" +
-                "SELECT USER_id " +
+                "SELECT USER_id, post_date " +
                 "FROM REVIEW " +
-                "WHERE PLACE_id = ? ";
+                "WHERE PLACE_id = ? " +
+                "ORDER BY post_date " +
+                "LIMIT 10 OFFSET ? ";
         return jdbcTemplate.query(
                 selectReviews,
                 (rs, rn)->{
                     String userId = rs.getString("USER_id");
                     return this.selectReview(placeId, userId);
                 },
-                placeId
+                placeId,
+                (page - 1) * 10
         );
     }
 
