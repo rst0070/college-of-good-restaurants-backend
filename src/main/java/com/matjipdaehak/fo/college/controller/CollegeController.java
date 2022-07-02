@@ -20,27 +20,25 @@ public class CollegeController {
     }
 
     /**
-     * 요청의 형태 - body로 요청
-     * {"college-id" : "123123"}
-     *
-     * 응답의 형태
-     * {
-     *     "x":"128",
-     *     "y":"37",
-     *     "radiuds":"1"
-     * }
-     *
      * x = longitude
      * y = latitude
      * radius = 거리제한(km)
      *
-     * @param req
+     * @param json : 요청 내용
+     * 요청의 형태 - body로 요청
+     *      * {"college_id" : "123123"}
      * @return
+     * 응답의 형태
+     *      * {
+     *      *     "x":"128",
+     *      *     "y":"37",
+     *      *     "radiuds":"1"
+     *      * }
      */
     @RequestMapping("/get-radius")
-    public Map<String, String> getCollegeRadiusInfo(@RequestBody Map<String, String> req){
-        String collegeId = req.get("college-id");
-        College college = collegeService.getCollegeByCollegeId(Integer.parseInt(collegeId));
+    public Map<String, String> getCollegeRadiusInfo(@RequestBody JsonNode json){
+        int collegeId = json.get("college_id").asInt();
+        College college = collegeService.getCollegeByCollegeId(collegeId);
 
         return Map.of(
                 "x", college.getLongitude()+"",

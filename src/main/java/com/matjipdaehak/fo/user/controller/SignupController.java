@@ -1,5 +1,6 @@
 package com.matjipdaehak.fo.user.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.matjipdaehak.fo.user.service.SignupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,10 +44,20 @@ public class SignupController {
         return Map.of("message","sended auth code");
     }
 
+    /**
+     * @param json: 요청 예시
+     * {
+     *     "email":"rst0070@uos.ac.kr",
+     *     "auth_code":"719*GM>0"
+     * }
+     * @param res
+     * @return
+     */
     @RequestMapping("/check-auth-code")
-    public Map<String, String> checkAuthCode(@RequestBody Map<String, String> reqMap, HttpServletResponse res){
-        String email = reqMap.get("email");
-        String authCode = reqMap.get("auth-code");
+    public Map<String, String> checkAuthCode(@RequestBody JsonNode json, HttpServletResponse res){
+        String email = json.get("email").asText();
+        String authCode = json.get("auth_code").asText();
+
         if(!signupService.checkAuthCode(email, authCode)){
             res.setStatus(406);
             return Map.of("message", "auth code is not matched");
@@ -55,12 +66,12 @@ public class SignupController {
     }
 
     /**
-     * { "user-id" : "....." } 방식의 요청에 해당 user-id가 유효한지 여부를 알려준다.
+     * { "user_id" : "....." } 방식의 요청에 해당 user-id가 유효한지 여부를 알려준다.
      * @return {} - 유효한 id인 경우 , {} - 유효하지 않은경우
      */
     @RequestMapping("/check-user-id")
-    public Map<String, String> checkUserId(@RequestBody Map<String, String> reqMap, HttpServletResponse res){
-        String userId = reqMap.get("user-id");
+    public Map<String, String> checkUserId(@RequestBody JsonNode json, HttpServletResponse res){
+        String userId = json.get("user_id").asText();
         if(!signupService.isUserIdPossible(userId)){
             res.setStatus(406);
             return Map.of("message", "the id is not possible to use");
@@ -69,26 +80,27 @@ public class SignupController {
     }
 
     /**
-     * {
-     *     "user-id" :"",
-     *     "password":"",
-     *     "nickname":"",
-     *     "auth-code":"",
-     *     "email":""
-     * }
+     *
      * 인증코드확인
      * 아이디확인
      * 회원가입 기능 작동
-     * @param reqMap
+     * @param json 요청 내용
+     * {
+     *      "user_id" :"",
+     *      "password":"",
+     *      "nickname":"",
+     *      "auth_code":"",
+     *      "email":""
+     * }
      * @return
      */
-    @RequestMapping
-    public Map<String, String> signupAction(@RequestBody Map<String, String> reqMap, HttpServletResponse res){
-        String emailAddr = reqMap.get("email");
-        String authCode = reqMap.get("auth-code");
-        String userId = reqMap.get("user-id");
-        String password = reqMap.get("password");
-        String nickname = reqMap.get("nickname");
+    @PostMapping
+    public Map<String, String> signupAction(@RequestBody JsonNode json, HttpServletResponse res){
+        String emailAddr = json.get("email").asText();
+        String authCode = json.get("auth_code").asText();
+        String userId = json.get("user_id").asText();
+        String password = json.get("password").asText();
+        String nickname = json.get("nickname").asText();
 
         if(!signupService.checkAuthCode(emailAddr, authCode)){
             res.setStatus(406);
