@@ -84,3 +84,13 @@ create table REVIEW_IMAGE_LIST(
     foreign key (REVIEW_USER_id) references REVIEW(USER_id)
 );
 
+create table PLACE_LIKE(
+    PLACE_id int,
+    USER_id varchar(20),
+    like_date date not null,
+    primary key (PLACE_id, USER_id),
+    foreign key (PLACE_id) references PLACE(place_id),
+    foreign key (USER_id) references USER(user_id)
+);
+
+
