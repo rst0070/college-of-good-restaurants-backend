@@ -1,5 +1,6 @@
 package com.matjipdaehak.fo.place.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,15 +10,22 @@ import lombok.NoArgsConstructor;
 public class Place {
 
     @JsonProperty("place_id")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private int placeId;
+
     @JsonProperty("kakao_place_id")
     private String kakaoPlaceId;
     private String name;
 
     /** 도로명 주소*/
     private String address;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private double latitude;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private double longitude;
+
     private String phone;
     private String category;
     @JsonProperty("image_url")
