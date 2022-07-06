@@ -17,6 +17,11 @@ public class PlaceLikeServiceImpl implements PlaceLikeService{
     }
 
     @Override
+    public boolean checkLikeExist(int placeId, String userId) {
+        return placeLikeRepository.isExist(placeId, userId);
+    }
+
+    @Override
     public void addLike(int placeId, String userId, Date likeDate) {
         placeLikeRepository.insertPlaceLike(
                 new PlaceLike(

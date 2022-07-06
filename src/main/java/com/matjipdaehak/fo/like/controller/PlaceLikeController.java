@@ -37,6 +37,21 @@ public class PlaceLikeController {
     }
 
     /**
+     * 유저가 place like를 했는지 확인한다.
+     * @param json - {"place_id" : "1", "user_id" : "wonbinkim"}
+     * @return {"result":"true"} || {"result":"false"}
+     */
+    @PostMapping("/exist")
+    public Map<String, String> checkLike(@RequestBody JsonNode json){
+        int placeId = json.get("place_id").asInt();
+        String userId = json.get("user_id").asText();
+        boolean exist = placeLikeService.checkLikeExist(placeId, userId);
+        if(exist)
+            return Map.of("result", "true");
+        return Map.of("result", "false");
+    }
+
+    /**
      * 좋아요 등록
      * @param json - {"place_id":"11", "user_id":"dd", "like_date":"2022-07-03"} 이와 같은 형식의 데이터
      */

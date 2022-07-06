@@ -7,6 +7,14 @@ import java.util.*;
 public interface PlaceLikeService {
 
     /**
+     * 해당하는 PLACE_LIKE row가 존재하는지 확인
+     * @param placeId
+     * @param userId
+     * @return true - 존재, false - 없음
+     */
+    boolean checkLikeExist(int placeId, String userId);
+
+    /**
      * place like를 DB에 등록한다.
      * @param placeId
      * @param userId

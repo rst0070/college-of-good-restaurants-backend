@@ -17,6 +17,22 @@ public class PlaceLikeRepositoryImpl implements PlaceLikeRepository{
     }
 
     @Override
+    public boolean isExist(int placeId, String userId) {
+        String sql = "" +
+                "SELECT EXISTS( " +
+                " SELECT PLACE_id " +
+                " FROM PLACE_LIKE " +
+                " WHERE PLACE_id = ? and USER_id = ? " +
+                ")";
+        return jdbcTemplate.queryForObject(
+                sql,
+                (rs, rn) -> rs.getBoolean(1),
+                placeId,
+                userId
+        );
+    }
+
+    @Override
     public void insertPlaceLike(PlaceLike placeLike) {
         String sql = "" +
                 "insert into PLACE_LIKE(PLACE_id, USER_id, like_date) " +
