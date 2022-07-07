@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class Place {
 
     @JsonProperty("place_id")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private int placeId;
 
     @JsonProperty("kakao_place_id")
@@ -20,10 +19,7 @@ public class Place {
     /** 도로명 주소*/
     private String address;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private double latitude;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private double longitude;
 
     private String phone;

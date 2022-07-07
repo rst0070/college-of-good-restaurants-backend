@@ -72,7 +72,7 @@ public class PlaceController {
      * 응답형식
      * [
      *     {
-     *         "place_id": "1",
+     *         "place_id": 1,
      *         "kakao_place_id": "16955698",
      *         "name": "테스트용 가게 기꾸초밥",
      *         "address": "경기 구리시 안골로 91 기꾸초밥",

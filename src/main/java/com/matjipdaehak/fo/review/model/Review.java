@@ -18,20 +18,17 @@ public class Review {
     rating int,
      */
     @JsonProperty("place_id")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private int placeId;
 
     @JsonProperty("user_id")
     private String userId;
 
     @JsonProperty("post_date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd")
     private Date postDate;
 
     @JsonProperty("post_text")
     private String postText;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private int rating;
 
     @JsonProperty("image_urls")

@@ -13,13 +13,11 @@ import java.util.*;
 public class PlaceLike {
 
     @JsonProperty("place_id")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private int placeId;
 
     @JsonProperty("user_id")
     private String userId;
 
     @JsonProperty("like_date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date likeDate;
 }

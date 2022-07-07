@@ -64,9 +64,9 @@ public class ReviewController {
      *        }
      */
     @GetMapping("/get-pages")
-    public Map<String, String> getNumOfPagesOfReview(@RequestBody JsonNode json){
+    public Map<String, Integer> getNumOfPagesOfReview(@RequestBody JsonNode json){
         int placeId = json.get("place_id").asInt();
-        return Map.of("pages", reviewService.numberOfPagesOfReviewOfPlace(placeId)+"");
+        return Map.of("pages", reviewService.numberOfPagesOfReviewOfPlace(placeId));
     }
 
     /**
