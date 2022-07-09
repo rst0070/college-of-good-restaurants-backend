@@ -58,7 +58,7 @@ public class PlaceController {
             res.setStatus(500);
             return Map.of("message", ex.getMessage());
         }
-        return null;
+        return Map.of("message", "success");
     }
 
     /**
