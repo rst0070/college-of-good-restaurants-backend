@@ -6,6 +6,9 @@ spring:
     driverClassName: org.h2.Driver
     #url: jdbc:mysql://localhost:3306/matjipdaehak
     #driverClassName: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      data-locations: classpath:colleges.sql, classpath:places.sql, classpath:users.sql, classpath:reviews.sql
   h2:
     console:
       enabled: true
