@@ -6,7 +6,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class PlaceRepositoryImpl implements PlaceRepository{
@@ -16,6 +16,44 @@ public class PlaceRepositoryImpl implements PlaceRepository{
     @Autowired
     public PlaceRepositoryImpl(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    /**
+     * PLACE가 등록되면 근처의 학교들에도 PLACE를 등록해줘야한다.
+     * 이때 기준은 학교부터의 거리이므로 제한거리를 계산해 등록할 학교를 구하고
+     * 해당 학교들에 PLACE를 등록시켜줘야한다.
+     * @param place - place id를 포함한 Place객체
+     */
+    private void insertPlaceIntoPlaceList(Place place){
+        String selectCollege = "" +
+                "SELECT college_id, distance_limit_km, " +
+                "(6371*acos(cos(radians( latitude ))*cos(radians( ? ))*cos(radians( ? )-radians( longitude ))+sin(radians( latitude ))*sin(radians( ? )))) " +
+                " AS dist " +
+                "FROM COLLEGE " +
+                "GROUP BY college_id " +
+                "HAVING dist <= distance_limit_km ";
+
+        String insertPlaceList = "" +
+                "INSERT INTO PLACE_LIST_AT_COLLEGE(COLLEGE_id, PLACE_id) " +
+                "VALUES(?, ?) ";
+
+        //위도1, *위도2, *경도2, 경도1, 위도1, *위도2
+        Iterator<Integer> colleges =
+                jdbcTemplate.query(
+                        selectCollege,
+                        (rs, rn) -> rs.getInt("college_id"),
+                        place.getLatitude(),
+                        place.getLongitude(),
+                        place.getLatitude()
+                        ).iterator();
+
+        while(colleges.hasNext()){
+            jdbcTemplate.update(
+                    insertPlaceList,
+                    colleges.next(),
+                    place.getPlaceId()
+            );
+        }
     }
 
     /**
@@ -32,7 +70,7 @@ public class PlaceRepositoryImpl implements PlaceRepository{
      */
     @Override
     public void insertPlace(Place place) throws DataAccessException {
-        String insertToPlace = "" +
+        String insertPlace = "" +
                 "insert into PLACE(place_name, place_address, latitude, longitude, phone) " +
                 "values(?, ?, ?, ?, ?) ";
 
@@ -41,17 +79,19 @@ public class PlaceRepositoryImpl implements PlaceRepository{
                 "FROM PLACE " +
                 "WHERE place_name = ? and place_address = ? ";
 
-        String insertToKakaoPlace = "" +
+        String insertKakaoPlace = "" +
                 "insert into KAKAO_PLACE(PLACE_id, kakao_place_id, category, place_image_url) " +
                 "values(?, ?, ?, ?) ";
 
-        jdbcTemplate.update(insertToPlace,
+        //PLACE 테이블에 등록
+        jdbcTemplate.update(insertPlace,
                 place.getName(),
                 place.getAddress(),
                 place.getLatitude(),
                 place.getLongitude(),
                 place.getPhone());
 
+        //DB에서 생성된 PLACE id
         int placeId = jdbcTemplate.queryForObject(
                 getPlaceId,
                 (rs, rn) -> rs.getInt("place_id"),
@@ -59,12 +99,20 @@ public class PlaceRepositoryImpl implements PlaceRepository{
                 place.getAddress()
         );
 
-        jdbcTemplate.update(insertToKakaoPlace,
-                placeId,
+        place.setPlaceId(placeId);
+
+        //KAKAO PLACE 테이블에 등록
+        jdbcTemplate.update(insertKakaoPlace,
+                place.getPlaceId(),
                 place.getKakaoPlaceId(),
                 place.getCategory(),
                 place.getImageUrl());
+
+        //PLACE LIST 테이블에 등록
+        this.insertPlaceIntoPlaceList(place);
     }
+
+
 
     @Override
     public Place selectPlace(int placeId) {
