@@ -41,6 +41,7 @@ public class PlaceController {
      */
     @RequestMapping("/add-place")
     public Map<String, String> addPlace(@RequestBody Map<String, String> req, HttpServletResponse res){
+        int placeId = 0;
         try{
             Place place = new Place(
                     req.get("kakao_id"),
@@ -52,13 +53,16 @@ public class PlaceController {
                     req.get("category_name"),
                     req.get("image-url")
             );
-            placeService.createNewPlace(place);
+            placeId = placeService.createNewPlace(place);
         }catch(Exception ex){
             logger.info(ex.getMessage());
             res.setStatus(500);
             return Map.of("message", ex.getMessage());
         }
-        return Map.of("message", "success");
+        return Map.of(
+                "message", "success",
+                "place_id", ""+placeId
+        );
     }
 
     /**

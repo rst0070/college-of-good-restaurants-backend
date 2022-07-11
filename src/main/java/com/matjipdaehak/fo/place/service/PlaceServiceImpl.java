@@ -28,9 +28,9 @@ public class PlaceServiceImpl implements PlaceService{
      */
     @Override
     @Transactional
-    public void createNewPlace(Place place) throws DataAlreadyExistException {
+    public int createNewPlace(Place place) throws DataAlreadyExistException {
         try{
-            placeRepository.insertPlace(place);
+            return placeRepository.insertPlace(place);
         }catch(DataAccessException ex){
             throw new DataAlreadyExistException(ex.getMessage());
         }

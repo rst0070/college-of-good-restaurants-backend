@@ -69,7 +69,7 @@ public class PlaceRepositoryImpl implements PlaceRepository{
      * @throws DataAccessException
      */
     @Override
-    public void insertPlace(Place place) throws DataAccessException {
+    public int insertPlace(Place place) throws DataAccessException {
         String insertPlace = "" +
                 "insert into PLACE(place_name, place_address, latitude, longitude, phone) " +
                 "values(?, ?, ?, ?, ?) ";
@@ -110,6 +110,7 @@ public class PlaceRepositoryImpl implements PlaceRepository{
 
         //PLACE LIST 테이블에 등록
         this.insertPlaceIntoPlaceList(place);
+        return placeId;
     }
 
 
