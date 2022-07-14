@@ -1,6 +1,8 @@
 package com.matjipdaehak.fo.place.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.matjipdaehak.fo.place.model.ExtendedPlace;
+import com.matjipdaehak.fo.place.service.ExtendedPlaceService;
 import org.slf4j.*;
 import com.matjipdaehak.fo.place.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,14 @@ public class PlaceController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PlaceService placeService;
+    private final ExtendedPlaceService extendedPlaceService;
 
     @Autowired
-    public PlaceController(PlaceService placeService){
+    public PlaceController(
+            PlaceService placeService,
+            ExtendedPlaceService extendedPlaceService){
         this.placeService = placeService;
+        this.extendedPlaceService = extendedPlaceService;
     }
 
     /**
@@ -68,44 +74,61 @@ public class PlaceController {
     /**
      * 장소에 대해 키워드 서칭
      * 키워드와 id로 확인
-     * {
+     * @param {
      *     "keyword" : "고기",
-     *     "college_id" : "123"
+     *     "college_id" : "123",
+     *     "scope_start":"1",
+     *     "scope_end":"10"
      * }
      *
-     * 응답형식
-     * [
+     * @return [
      *     {
+     *         "name": "맛나식당",
+     *         "address": "서울 동대문구 망우로10길 44",
+     *         "latitude": 37.5871346761732,
+     *         "longitude": 127.056588125178,
+     *         "phone": "010-9600-0657",
+     *         "category": "한식",
+     *         "rating": 4.0,
      *         "place_id": 1,
-     *         "kakao_place_id": "16955698",
-     *         "name": "테스트용 가게 기꾸초밥",
-     *         "address": "경기 구리시 안골로 91 기꾸초밥",
-     *         "longitude": 128.0,
-     *         "latitude": 38.0,
-     *         "phone": null,
-     *         "category": "초밥",
-     *         "image_url":"asdasdasd"
+     *         "kakao_place_id": "195227114",
+     *         "image_url": null,
+     *         "review_count": 1,
+     *         "like_count": 0
      *     }
      * ]
-     *
-     * @return
      */
     @RequestMapping("/search-place")
-    public List<Place> searchPlace(@RequestBody Map<String, String> req){
-        String keyword = req.get("keyword");
-        int collegeId = Integer.parseInt(req.get("college_id"));
-
-        List<Place> placeList = placeService.searchPlaceByKeyword(keyword, collegeId);
-        return placeList;
+    public List<ExtendedPlace> searchPlace(@RequestBody JsonNode json){
+        int collegeId = json.get("college_id").asInt();
+        String keyword = json.get("keyword").asText();
+        int scopeStart = json.get("scope_start").asInt();
+        int scopeEnd = json.get("scope_end").asInt();
+        return extendedPlaceService.keywordSearchExtendedPlace(collegeId, keyword, scopeStart, scopeEnd);
     }
 
     /**
-     *
-     * @return
+     * @param {
+     *     "place_id":"1"
+     * }
+     * @return {
+     *     "name": "맛나식당",
+     *     "address": "서울 동대문구 망우로10길 44",
+     *     "latitude": 37.5871346761732,
+     *     "longitude": 127.056588125178,
+     *     "phone": "010-9600-0657",
+     *     "category": "한식",
+     *     "rating": 4.0,
+     *     "place_id": 1,
+     *     "kakao_place_id": "195227114",
+     *     "image_url": null,
+     *     "review_count": 1,
+     *     "like_count": 0
+     * }
      */
     @PostMapping("/get-place")
-    public Place getPlace(@RequestBody JsonNode json){
+    public ExtendedPlace getPlace(@RequestBody JsonNode json){
         int placeId = json.get("place_id").asInt();
-        return placeService.getPlaceByPlaceId(placeId);
+        return extendedPlaceService.getExtendedPlaceByPlaceId(placeId);
     }
 }

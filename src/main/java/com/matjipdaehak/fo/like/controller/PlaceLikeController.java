@@ -1,6 +1,7 @@
 package com.matjipdaehak.fo.like.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.matjipdaehak.fo.like.model.ExtendedPlaceLike;
 import com.matjipdaehak.fo.like.model.PlaceLike;
 import com.matjipdaehak.fo.like.service.PlaceLikeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +85,7 @@ public class PlaceLikeController {
      * @return List<PlaceLike> - [ {}, ...]
      */
     @PostMapping("/user-like-list")
-    public List<PlaceLike> userLikeList(@RequestBody JsonNode json){
+    public List<ExtendedPlaceLike> userLikeList(@RequestBody JsonNode json){
         String userId = json.get("user_id").asText();
         return placeLikeService.getLikeListByUserId(userId);
     }

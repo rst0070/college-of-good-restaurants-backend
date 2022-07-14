@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DB의 PLACE, KAKAO_PLACE 테이블과 대응되는 클래스
+ */
 @Data
 @NoArgsConstructor
 public class Place {
@@ -36,6 +39,7 @@ public class Place {
      * @param longitude
      * @param phone
      * @param category
+     * @param imageUrl
      */
     public Place(
             int placeId,
@@ -71,6 +75,7 @@ public class Place {
      * @param longitude
      * @param phone
      * @param category
+     * @param imageUrl
      */
     public Place(
             String kakaoPlaceId,

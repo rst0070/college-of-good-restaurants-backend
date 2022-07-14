@@ -1,19 +1,31 @@
 package com.matjipdaehak.fo.like.service;
 
+import com.matjipdaehak.fo.like.model.ExtendedPlaceLike;
 import com.matjipdaehak.fo.like.model.PlaceLike;
 import com.matjipdaehak.fo.like.repository.PlaceLikeRepository;
+import com.matjipdaehak.fo.place.repository.PlaceRepository;
+import com.matjipdaehak.fo.place.service.ExtendedPlaceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
 public class PlaceLikeServiceImpl implements PlaceLikeService{
 
     private final PlaceLikeRepository placeLikeRepository;
+    private final ExtendedPlaceService extendedPlaceService;
 
-    public PlaceLikeServiceImpl(PlaceLikeRepository placeLikeRepository){
+    @Autowired
+    public PlaceLikeServiceImpl(
+            PlaceLikeRepository placeLikeRepository,
+            ExtendedPlaceService extendedPlaceService
+            ){
         this.placeLikeRepository = placeLikeRepository;
+        this.extendedPlaceService = extendedPlaceService;
     }
 
     @Override
@@ -38,8 +50,19 @@ public class PlaceLikeServiceImpl implements PlaceLikeService{
     }
 
     @Override
-    public List<PlaceLike> getLikeListByUserId(String userId) {
-        return placeLikeRepository.selectPlaceLikeByUserId(userId);
+    public List<ExtendedPlaceLike> getLikeListByUserId(String userId) {
+        Iterator<PlaceLike> likes = placeLikeRepository.selectPlaceLikeByUserId(userId).iterator();
+        LinkedList<ExtendedPlaceLike> result = new LinkedList<ExtendedPlaceLike>();
+        while(likes.hasNext()){
+            PlaceLike like = likes.next();
+            result.add(
+                    new ExtendedPlaceLike(
+                            like,
+                            extendedPlaceService.getExtendedPlaceByPlaceId(like.getPlaceId())
+                    )
+            );
+        }
+        return result;
     }
 
     @Override

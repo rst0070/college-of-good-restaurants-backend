@@ -1,5 +1,6 @@
 package com.matjipdaehak.fo.like.service;
 
+import com.matjipdaehak.fo.like.model.ExtendedPlaceLike;
 import com.matjipdaehak.fo.like.model.PlaceLike;
 
 import java.util.*;
@@ -33,7 +34,7 @@ public interface PlaceLikeService {
      * @param userId - 사용자 id
      * @return List<PlaceLike>
      */
-    List<PlaceLike> getLikeListByUserId(String userId);
+    List<ExtendedPlaceLike> getLikeListByUserId(String userId);
 
     /**
      * 특정 PLACE의 좋아요 개수를 세서 리턴
