@@ -17,6 +17,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
 @EnableWebSecurity
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
@@ -48,6 +50,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         http
                 .cors()
                 .configurationSource(this.corsConfigurationSource());
+
         http
                 .authorizeRequests()
                 .antMatchers(
@@ -55,6 +58,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                         "/user-management/signup/**"
                 )
                 .permitAll();
+
         http
                 .requestMatchers()
                     .antMatchers(
@@ -78,13 +82,16 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationProvider(jwtService);
     }
 
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOriginPattern("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.addAllowedMethod("POST");
+        configuration.addAllowedMethod("GET");
+        configuration.addAllowedMethod("OPTIONS");
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
