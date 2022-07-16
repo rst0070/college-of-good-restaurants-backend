@@ -1,6 +1,7 @@
 package com.matjipdaehak.fo.security;
 
 import com.matjipdaehak.fo.security.authentication.JwtAuthenticationProvider;
+import com.matjipdaehak.fo.security.filter.CORSFilter;
 import com.matjipdaehak.fo.security.filter.JwtAuthenticationFilter;
 import com.matjipdaehak.fo.security.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,55 +48,42 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http
-                .cors()
-                .configurationSource(this.corsConfigurationSource());
 
+        /**
+         * 1.CORS필터적용
+         * 2.JWT필터적용 (자체적으로 인증에 대한 whitelist를 가지고 있어 인증이 필요하지 않은경우 인증된것으로 처리)
+         * 3.필터에서 인증되었다고 처리된 요청은 권한허용
+         */
         http
+                .addFilterBefore(new CORSFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(this.jwtAuthenticationFilter(), CORSFilter.class)
                 .authorizeRequests()
-                .antMatchers(
-                        "/user-management/login/**",
-                        "/user-management/signup/**"
-                )
-                .permitAll();
+                .anyRequest()
+                .authenticated();
+    }
 
-        http
-                .requestMatchers()
-                    .antMatchers(
-                        "/review/add-review"
-                        , "/place/add-place"
-                    )
-                .and()
-                .addFilterBefore(
-                        new JwtAuthenticationFilter(this.authenticationManagerBean()),
-                        BasicAuthenticationFilter.class
-                );
+    /**
+     * 특정 URI에 대한 인증을 시도하는 JWT 필터를 생성
+     * @return JwtAuthenticationFilter
+     */
+    public JwtAuthenticationFilter jwtAuthenticationFilter(){
+        List<String> uriToAuthenticateList = List.of(
+                "/review/add-review",
+                "/place/add-place"
+        );
+        return new JwtAuthenticationFilter(
+                uriToAuthenticateList,
+                this.authenticationManager()
+        );
     }
 
     @Override
-    public AuthenticationManager authenticationManagerBean(){
-        return new ProviderManager(jwtAuthenticationProvider());
+    public AuthenticationManager authenticationManager(){
+        return new ProviderManager(this.jwtAuthenticationProvider());
     }
-
-
-    public AuthenticationProvider jwtAuthenticationProvider(){
-        return new JwtAuthenticationProvider(jwtService);
-    }
-
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.addAllowedMethod("POST");
-        configuration.addAllowedMethod("GET");
-        configuration.addAllowedMethod("OPTIONS");
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+    public AuthenticationProvider jwtAuthenticationProvider(){
+        return new JwtAuthenticationProvider(jwtService);
     }
 }
