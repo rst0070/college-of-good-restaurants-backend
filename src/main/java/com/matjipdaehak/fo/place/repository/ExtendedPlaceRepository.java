@@ -4,6 +4,10 @@ import com.matjipdaehak.fo.exception.UnprocessableEntityException;
 import com.matjipdaehak.fo.place.model.ExtendedPlace;
 import java.util.*;
 
+/**
+ * ExtendedPlace는 PLACE데이터와 REVIEW, PLACE_LIKE데이터를 조합하여 생성한 객체이다.<br/>
+ * 따라서 조회하는것이 주 목적. 그중에서도 키워드 검색이 중요하다.
+ */
 public interface ExtendedPlaceRepository {
 
     /**
@@ -22,5 +26,7 @@ public interface ExtendedPlaceRepository {
      * @return List of ExtendedPlace
      */
     List<ExtendedPlace> keywordSearchExtendedPlace(int collegeId, String keyword, int scopeStart, int scopeEnd) throws UnprocessableEntityException;
+
+    //List<ExtendedPlace> keywordSearchExtendedPlaceOrderbyReview
 
 }

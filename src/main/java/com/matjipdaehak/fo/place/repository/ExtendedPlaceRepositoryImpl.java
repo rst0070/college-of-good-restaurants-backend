@@ -84,6 +84,9 @@ public class ExtendedPlaceRepositoryImpl implements ExtendedPlaceRepository{
 
     /**
      * 테스트 필요
+     * 기준은 keyword와 얼마나 매칭되는지. 출력순서에 대해선 front에서 작업해도 될 듯 하다..?
+     * 기준에 대한 PLACE들 리스트를 DB에서 추출후 selectExtendedPlace메소드를 이용해 각각의 ExtendedPlace객체를 생성한다.
+     *
      * @param collegeId
      * @param keyword
      * @return
@@ -98,8 +101,8 @@ public class ExtendedPlaceRepositoryImpl implements ExtendedPlaceRepository{
         String sql = "" +
                 "SELECT p.PLACE_id as place_id, count(r.USER_id) as count " +
                 "FROM " +
-                "   (" +
-                "       REVIEW r inner join " +
+                "   ( " +
+                "       REVIEW r right outer join " +
                 "       (PLACE p inner join KAKAO_PLACE kp on p.place_id = kp.place_id) " +
                 "       on r.PLACE_id = p.place_id" +
                 "   ) " + // review:place:kakao_place 관계 = n:1:1
@@ -126,11 +129,8 @@ public class ExtendedPlaceRepositoryImpl implements ExtendedPlaceRepository{
 
         LinkedList<ExtendedPlace> result = new LinkedList<ExtendedPlace>();
         while(placeIds.hasNext()){
-            result.add(selectExtendedPlace(placeIds.next()));
+            result.add(this.selectExtendedPlace(placeIds.next()));
         }
-
-        if(result.isEmpty())//결과가 없으면 키워드에 해당하는것이 없거나 scope에 해당하는것이 없는경우
-            throw new UnprocessableEntityException("");
 
         return result;
     }
