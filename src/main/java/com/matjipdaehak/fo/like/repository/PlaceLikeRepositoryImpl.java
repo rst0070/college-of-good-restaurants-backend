@@ -68,11 +68,14 @@ public class PlaceLikeRepositoryImpl implements PlaceLikeRepository{
     }
 
     @Override
-    public List<PlaceLike> selectPlaceLikeByUserId(String userId) {
+    public List<PlaceLike> selectPlaceLikeByUserId(String userId, int scopeStart, int scopeEnd) {
         String sql = "" +
                 "select PLACE_id, like_date " +
                 "from PLACE_LIKE " +
-                "where USER_id = ? ";
+                "where USER_id = ? " +
+                "ORDER BY like_date DESC " +
+                "LIMIT ? OFFSET ? ";
+
         return jdbcTemplate.query(
                 sql,
                 (rs, rn) -> {
@@ -80,7 +83,9 @@ public class PlaceLikeRepositoryImpl implements PlaceLikeRepository{
                     Date likeDate = rs.getDate("like_date");
                     return new PlaceLike(placeId, userId, likeDate);
                 },
-                userId
+                userId,
+                scopeEnd - scopeStart + 1,
+                scopeStart - 1
         );
     }
 

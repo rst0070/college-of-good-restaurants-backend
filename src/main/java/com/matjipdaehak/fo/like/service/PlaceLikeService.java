@@ -31,10 +31,13 @@ public interface PlaceLikeService {
 
     /**
      * 특정 유저의 좋아요 목록을 가져온다.
+     * 이때 좋아요 날짜가 내림차순으로 된다.(현재와 가까운 날짜부터)<br/>
      * @param userId - 사용자 id
+     * @param scopeStart - 범위 시작점
+     * @param scopeEnd - 범위 끝나는 점
      * @return List<PlaceLike>
      */
-    List<ExtendedPlaceLike> getLikeListByUserId(String userId);
+    List<ExtendedPlaceLike> getLikeListByUserId(String userId, int scopeStart, int scopeEnd);
 
     /**
      * 특정 PLACE의 좋아요 개수를 세서 리턴

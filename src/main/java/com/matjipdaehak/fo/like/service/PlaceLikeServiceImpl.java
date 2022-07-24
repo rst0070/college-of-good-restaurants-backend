@@ -50,8 +50,8 @@ public class PlaceLikeServiceImpl implements PlaceLikeService{
     }
 
     @Override
-    public List<ExtendedPlaceLike> getLikeListByUserId(String userId) {
-        Iterator<PlaceLike> likes = placeLikeRepository.selectPlaceLikeByUserId(userId).iterator();
+    public List<ExtendedPlaceLike> getLikeListByUserId(String userId, int scopeStart, int scopeEnd) {
+        Iterator<PlaceLike> likes = placeLikeRepository.selectPlaceLikeByUserId(userId, scopeStart, scopeEnd).iterator();
         LinkedList<ExtendedPlaceLike> result = new LinkedList<ExtendedPlaceLike>();
         while(likes.hasNext()){
             PlaceLike like = likes.next();

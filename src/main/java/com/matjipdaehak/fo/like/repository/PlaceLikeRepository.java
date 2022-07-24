@@ -19,7 +19,7 @@ public interface PlaceLikeRepository {
 
     PlaceLike selectPlaceLike(int placeId, String userId);
 
-    List<PlaceLike> selectPlaceLikeByUserId(String userId);
+    List<PlaceLike> selectPlaceLikeByUserId(String userId, int scopeStart, int scopeEnd);
 
     int countPlaceLikeByPlaceId(int placeId);
 }

@@ -81,13 +81,20 @@ public class PlaceLikeController {
 
     /**
      * 사용자의 좋아요 목록
-     * @param json - {"user_id" : "asd"} 이와 같은 형식의 요청 데이터
+     * @param json -
+     *             {
+     *              "user_id" : "asd",
+     *              "scope_start":"1",
+     *              "scope_end":"10"
+     *             } 이와 같은 형식의 요청 데이터(1번부터 10번까지의 좋아요를 반환, 날짜가 현재에 가까운순서대로)
      * @return List<PlaceLike> - [ {}, ...]
      */
     @PostMapping("/user-like-list")
     public List<ExtendedPlaceLike> userLikeList(@RequestBody JsonNode json){
         String userId = json.get("user_id").asText();
-        return placeLikeService.getLikeListByUserId(userId);
+        int scopeStart = json.get("scope_start").asInt();
+        int scopeEnd = json.get("scope_end").asInt();
+        return placeLikeService.getLikeListByUserId(userId, scopeStart, scopeEnd);
     }
 
     /**
