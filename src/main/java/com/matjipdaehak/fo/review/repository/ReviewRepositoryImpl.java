@@ -22,24 +22,24 @@ public class ReviewRepositoryImpl implements ReviewRepository{
 
     /**
      * 두번의 쿼리가 필요하다 이미지 리스트 테이블이 따로 존재하기 때문.
-     * @param placeId - pk1
-     * @param userId - pk2
-     * @return
+     * @param reviewId
+     * @return Review
      * @throws DataAccessException
      */
     @Override
-    public Review selectReview(int placeId, String userId) throws DataAccessException {
+    public Review selectReview(long reviewId) throws DataAccessException {
 
         //REVIEW테이블 SELECT
         String selectReview = "" +
                 "SELECT PLACE_id, USER_id, post_date, post_text, rating " +
                 "FROM REVIEW " +
-                "WHERE PLACE_id = ? and USER_id = ? ";
+                "WHERE review_id = ? ";
 
         Review result = jdbcTemplate.queryForObject(
                 selectReview,
                 (rs, rn) ->{
                     Review review = new Review();
+                    review.setReviewId(reviewId);
                     review.setPlaceId(rs.getInt("PLACE_id"));
                     review.setUserId(rs.getString("USER_id"));
                     review.setPostDate(rs.getDate("post_date"));
@@ -47,23 +47,21 @@ public class ReviewRepositoryImpl implements ReviewRepository{
                     review.setRating(rs.getInt("rating"));
                     return review;
                 },
-                placeId,
-                userId
+                reviewId
         );
 
         // REVIEW_IMAGE_LIST테이블 SELECT
         String selectImageList = "" +
                 "SELECT image_url " +
                 "FROM REVIEW_IMAGE_LIST " +
-                "WHERE REVIEW_PLACE_id = ? and REVIEW_USER_id = ? ";
+                "WHERE REVIEW_id = ? ";
 
         List<String> imageList = jdbcTemplate.query(
                 selectImageList,
                 (rs, rn) -> {
                     return rs.getString("image_url");
                 },
-                placeId,
-                userId
+                reviewId
         );
 
         // SET IMAGE LIST
@@ -71,96 +69,82 @@ public class ReviewRepositoryImpl implements ReviewRepository{
         return result;
     }
 
-    @Override
-    public int numberOfReviewOfPlace(int placeId) throws DataAccessException {
-        String sql = "" +
-                "SELECT count(PLACE_id) as count " +
-                "FROM REVIEW " +
-                "WHERE PLACE_id = ? ";
-        return jdbcTemplate.queryForObject(
-                sql,
-                (rs, rn) -> rs.getInt("count"),
-                placeId
-        );
-    }
 
     /**
      * selectReview 메소드를 이용해 place id에 해당하는 Review객체들을 하나씩 생성
-     * 이때 pagination 적용
-     * 한 페이지에는 10개의 리뷰가 들어간다.
+     * 이때 scope을 적용해 해당범위의 review들을 리스트로 반환한다.
      * @param placeId
      * @return
      * @throws DataAccessException
      */
     @Override
-    public List<Review> selectReviewByPlaceId(int placeId, int page) throws DataAccessException {
+    public List<Review> selectReviewByPlaceId(int placeId, int scopeStart, int scopeEnd) throws DataAccessException {
+        //if(scopeStart < 1 || scopeEnd < scopeStart) throw new DataAccessException();
+        //예외 적용이 필요하다.
         String selectReviews = "" +
-                "SELECT USER_id, post_date " +
+                "SELECT review_id, post_date " +
                 "FROM REVIEW " +
                 "WHERE PLACE_id = ? " +
                 "ORDER BY post_date " +
-                "LIMIT 10 OFFSET ? ";
+                "LIMIT ? OFFSET ? ";
         return jdbcTemplate.query(
                 selectReviews,
                 (rs, rn)->{
-                    String userId = rs.getString("USER_id");
-                    return this.selectReview(placeId, userId);
+                    long reviewId = rs.getLong("review_id");
+                    return this.selectReview(reviewId);
                 },
                 placeId,
-                (page - 1) * 10
+                scopeEnd - scopeStart + 1,
+                scopeStart - 1
         );
     }
 
     @Override
     public void insertReview(Review review) {
-        try{
-            String reviewSql = "" +
-                    "INSERT INTO REVIEW(PLACE_id, USER_id, post_date, post_text, rating) " +
-                    "   VALUES(?, ?, ?, ?, ?) ";
-            jdbcTemplate.update(reviewSql,
+        //리뷰저장
+        String reviewSql = "" +
+                "INSERT INTO REVIEW(PLACE_id, USER_id, post_date, post_text, rating) " +
+                "   VALUES(?, ?, ?, ?, ?) ";
+        jdbcTemplate.update(reviewSql,
+                review.getPlaceId(),
+                review.getUserId(),
+                review.getPostDate(),
+                review.getPostText(),
+                review.getRating());
+
+        //리뷰 이미지 url 저장
+        String imageSql = "" +
+                "INSERT INTO REVIEW_IMAGE_LIST(REVIEW_PLACE_id, REVIEW_USER_id, image_url) " +
+                "   VALUES(?, ?, ?) ";
+
+        List<String> urlList = review.getImageUrls();
+        if(urlList == null) return;
+        Iterator<String> urls = urlList.iterator();
+
+        //url이 있을때 이를 저장한다.
+        while(urls.hasNext()) {
+            jdbcTemplate.update(imageSql,
                     review.getPlaceId(),
                     review.getUserId(),
-                    review.getPostDate(),
-                    review.getPostText(),
-                    review.getRating());
-
-            //리뷰 이미지 url 저장
-            String imageSql = "" +
-                    "INSERT INTO REVIEW_IMAGE_LIST(REVIEW_PLACE_id, REVIEW_USER_id, image_url) " +
-                    "   VALUES(?, ?, ?) ";
-
-            List<String> urlList = review.getImageUrls();
-            if(urlList == null) return;
-            Iterator<String> urls = urlList.iterator();
-
-            while(urls.hasNext()){
-                jdbcTemplate.update(imageSql,
-                        review.getPlaceId(),
-                        review.getUserId(),
-                        urls.next());
-            }
-        }catch(Exception ex){
-            //잘못된 데이터가 있을 수 있으니 지우기
-            logger.warn(ex.getMessage());
-            this.deleteReview(review.getPlaceId(), review.getUserId());
+                    urls.next());
         }
 
     }
 
     @Override
-    public void deleteReview(int placeId, String userId) throws DataAccessException{
+    public void deleteReview(long reviewId) throws DataAccessException{
         String deleteUrls = "" +
                 "DELETE FROM REVIEW_IMAGE_LIST " +
-                "WHERE REVIEW_PLACE_id = ? and REVIEW_USER_id = ? ";
+                "WHERE REVIEW_id = ? ";
 
         String deleteReview = "" +
                 "DELETE FROM REVIEW " +
-                "WHERE PLACE_id = ? and USER_id = ? ";
+                "WHERE review_id = ? ";
 
         jdbcTemplate.update(deleteUrls,
-                    placeId, userId);
+                    reviewId);
         jdbcTemplate.update(deleteReview,
-                    placeId, userId);
+                    reviewId);
     }
 
 

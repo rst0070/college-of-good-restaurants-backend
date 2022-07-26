@@ -64,24 +64,33 @@ create table EMAIL_AUTH_CODE(
 );
 
 create table REVIEW(
+    review_id bigint primary key auto_increment,
 	PLACE_id int,
     USER_id varchar(20),
     post_date date not null,
     post_text text not null,
     rating int,
-    primary key (PLACE_id, USER_id),
     constraint review_rating_check check( rating in (1, 2, 3, 4, 5)),
     foreign key (PLACE_id) references PLACE(place_id),
     foreign key (USER_id) references USER(user_id)
 );
 
 create table REVIEW_IMAGE_LIST(
-    REVIEW_PLACE_id int,
-    REVIEW_USER_id varchar(20),
-    image_url varchar(1000) not null,
-    primary key (REVIEW_PLACE_id, REVIEW_USER_id, image_url),
-    foreign key (REVIEW_PLACE_id) references REVIEW(PLACE_id),
-    foreign key (REVIEW_USER_id) references REVIEW(USER_id)
+    REVIEW_id bigint,
+    image_url varchar(1000),
+    foreign key (REVIEW_id) references REVIEW(review_id),
+    primary key (REVIEW_id, image_url)
+);
+
+create table COMMENT(
+    comment_id bigint primary key auto_increment,
+    REVIEW_id bigint,
+    USER_id varchar(20),
+    comment_text text not null,
+    comment_date datetime,
+    primary key (comment_id),
+    foreign key (REVIEW_id) references REVIEW(review_id),
+    foreign key (USER_id) references USER(user_id)
 );
 
 create table PLACE_LIKE(

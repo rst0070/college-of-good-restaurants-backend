@@ -24,18 +24,11 @@ public class ReviewServiceImpl implements ReviewService{
         reviewRepository.insertReview(review);
     }
 
-    @Override
-    public int numberOfPagesOfReviewOfPlace(int placeId) {
-        int numberOfReview = reviewRepository.numberOfReviewOfPlace(placeId);
-        int numberOfPages = numberOfReview/10;
 
-        if(numberOfReview % 10 != 0) numberOfPages++;
-        return numberOfPages;
-    }
 
     @Override
-    public List<Review> getReviewsByPlaceId(int placeId, int page) {
-        return this.reviewRepository.selectReviewByPlaceId(placeId, page);
+    public List<Review> getReviewsByPlaceId(int placeId, int scopeStart, int scopeEnd) {
+        return this.reviewRepository.selectReviewByPlaceId(placeId, scopeStart, scopeEnd);
     }
 
 }

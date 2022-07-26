@@ -7,21 +7,12 @@ import java.util.*;
 public interface ReviewRepository {
 
     /**
-     * PLACE_id와 USER_id로 리뷰정보를 가져와 Review model로 반환
-     * @param placeId - pk1
-     * @param userId - pk2
+     * review_id를 이용해 review 객체 생성
+     * @param reviewId - REVIEW의 primary key
      * @return Review - 해당 리뷰정보
      * @throws DataAccessException
      */
-    Review selectReview(int placeId, String userId) throws DataAccessException;
-
-    /**
-     * 특정 PLACE의 리뷰수를 가져온다.
-     * @param placeId - 특정 PLACE
-     * @return int - 리뷰수
-     * @throws DataAccessException
-     */
-    int numberOfReviewOfPlace(int placeId) throws DataAccessException;
+    Review selectReview(long reviewId) throws DataAccessException;
 
     /**
      * place id를 통해 해당하는 리뷰를 가져온다.
@@ -29,7 +20,7 @@ public interface ReviewRepository {
      * @return
      * @throws DataAccessException
      */
-    List<Review> selectReviewByPlaceId(int placeId, int page) throws DataAccessException;
+    List<Review> selectReviewByPlaceId(int placeId, int scopeStart, int scopeEnd) throws DataAccessException;
 
     /**
      * review를 DB에 저장한다.(REVIEW와 REVIEW_IMAGE_LIST테이블에)
@@ -39,10 +30,9 @@ public interface ReviewRepository {
     void insertReview(Review review) throws DataAccessException;
 
     /**
-     * place id와 user id에 해당되는 리뷰, 리뷰이미지들에 대한 참조를 지운다.
-     * @param placeId - pk1
-     * @param userId - pk2
-     * @throws DataAccessException - 지우는 과정에서 예외 발생시. place id 혹은 user id의 문제.
+     * review_id에 해당되는 리뷰, 리뷰이미지들에 대한 참조를 지운다.
+     * @param reviewId - 지울 리뷰의 id
+     * @throws DataAccessException - 지우는 과정에서 예외 발생시. review id의 문제.
      */
-    void deleteReview(int placeId, String userId) throws DataAccessException;
+    void deleteReview(long reviewId) throws DataAccessException;
 }

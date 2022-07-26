@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matjipdaehak.fo.review.model.Review;
+import com.matjipdaehak.fo.review.model.ReviewWithComments;
 import com.matjipdaehak.fo.review.service.ReviewService;
+import com.matjipdaehak.fo.review.service.ReviewWithCommentsService;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,16 +20,20 @@ public class ReviewController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ReviewService reviewService;
+    private final ReviewWithCommentsService reviewWithCommentsService;
     private final ObjectMapper objectMapper;
 
     @Autowired
     public ReviewController(ReviewService reviewService,
+                            ReviewWithCommentsService reviewWithCommentsService,
                             ObjectMapper objectMapper){
         this.reviewService = reviewService;
+        this.reviewWithCommentsService = reviewWithCommentsService;
         this.objectMapper = objectMapper;
     }
 
     /**
+     *
      * {
      *     "place_id" : "1",
      *     "user_id" : "wonbinkim",
@@ -36,6 +42,7 @@ public class ReviewController {
      *     "rating":"4",
      *     "image_urls":[]
      * }
+     *
      * @param json - json형태의 요청 내용
      */
     @RequestMapping("/add-review")
@@ -53,40 +60,18 @@ public class ReviewController {
         return null;
     }
 
-    /**
-     * @param json - json 형태의 요청
-     * 요청 형태:
-     *       {"place_id" : "1"}
-     * @return Map
-     * 응답형태:
-     *        {
-     *            "pages" : "5"
-     *        }
-     */
-    @GetMapping("/get-pages")
-    public Map<String, Integer> getNumOfPagesOfReview(@RequestBody JsonNode json){
-        int placeId = json.get("place_id").asInt();
-        return Map.of("pages", reviewService.numberOfPagesOfReviewOfPlace(placeId));
-    }
 
     /**
-     * 요청
-     * {
-     *     "place_id":"12313"
-     *     "page":"1"
-     * }
+     * /review/get-reviews
      *
-     * 응답
-     * [
-     *  {}
-     * ]
      * @param json
      * @return
      */
     @RequestMapping("/get-reviews")
-    public List<Review> getReviews(@RequestBody JsonNode json){
+    public List<ReviewWithComments> getReviews(@RequestBody JsonNode json){
         int placeId = json.get("place_id").asInt();
-        int page = json.get("page").asInt();
-        return reviewService.getReviewsByPlaceId(placeId, page);
+        int scopeStart = json.get("scope_start").asInt();
+        int scopeEnd = json.get("scope_end").asInt();
+        return reviewWithCommentsService.getReviewWithCommentsByPlaceId(placeId, scopeStart, scopeEnd);
     }
 }

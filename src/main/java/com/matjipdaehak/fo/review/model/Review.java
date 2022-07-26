@@ -10,13 +10,16 @@ import java.util.*;
 @NoArgsConstructor
 public class Review {
     /*
-
+    review_id bigint autoincrement
 	PLACE_id int,
     USER_id varchar(20),
     post_date date not null,
     post_text text not null,
     rating int,
      */
+    @JsonProperty("review_id")
+    private long reviewId;
+
     @JsonProperty("place_id")
     private int placeId;
 
