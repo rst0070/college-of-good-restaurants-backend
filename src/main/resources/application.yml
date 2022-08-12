@@ -8,7 +8,7 @@ spring:
     #driverClassName: com.mysql.cj.jdbc.Driver
   sql:
     init:
-      data-locations: classpath:colleges.sql, classpath:places.sql, classpath:users.sql, classpath:reviews.sql
+      data-locations: classpath:colleges.sql, classpath:users.sql, classpath:places.sql,  classpath:reviews.sql
   h2:
     console:
       enabled: true

@@ -35,6 +35,13 @@ create table PLACE(
     constraint place_unique_by_address_and_name unique (place_address, place_name)
 );
 
+create table PLACE_REGISTRANT(
+    PLACE_id int primary key,
+    USER_id varchar(20),
+    foreign key (PLACE_id) references PLACE(place_id),
+    foreign key (USER_id) references USER(user_id)
+);
+
 create table PLACE_LIST_AT_COLLEGE(
 	COLLEGE_id int,
     PLACE_id int,

@@ -7,3 +7,12 @@ insert into place( place_name, place_address, phone, latitude, longitude) values
 insert into place( place_name, place_address,  latitude, longitude) values('긴카오 태국식당', '서울 동대문구 망우로18다길 15',  37.586609071414, 127.060865311208);
     insert into place_list_at_college(COLLEGE_id, PLACE_id) values (31, 3);
     insert into kakao_place(PLACE_id, kakao_place_id, category) values (3, '1840844912', '태국음식');
+
+insert into PLACE_REGISTRANT(PLACE_id, USER_id )
+    values (1, 'wonbinkim');
+
+insert into PLACE_REGISTRANT(PLACE_id, USER_id )
+    values (2, 'wonbinkim');
+
+insert into PLACE_REGISTRANT(PLACE_id, USER_id )
+    values (3, 'wonbinkim');
