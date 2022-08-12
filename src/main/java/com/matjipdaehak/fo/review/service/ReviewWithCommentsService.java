@@ -17,4 +17,13 @@ public interface ReviewWithCommentsService {
      * @return
      */
     List<ReviewWithComments> getReviewWithCommentsByPlaceId(int placeId, int scopeStart, int scopeEnd);
+
+    /**
+     *
+     * @param userId
+     * @param scopeStart
+     * @param scopeEnd
+     * @return
+     */
+    List<ReviewWithComments> getReviewWithCommentsByUserId(String userId, int scopeStart, int scopeEnd);
 }

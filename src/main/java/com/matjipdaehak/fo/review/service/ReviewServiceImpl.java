@@ -31,4 +31,9 @@ public class ReviewServiceImpl implements ReviewService{
         return this.reviewRepository.selectReviewByPlaceId(placeId, scopeStart, scopeEnd);
     }
 
+    @Override
+    public List<Review> getReviewByUserId(String userId, int scopeStart, int scopeEnd) {
+        return this.reviewRepository.selectReviewByUserId(userId, scopeStart, scopeEnd);
+    }
+
 }

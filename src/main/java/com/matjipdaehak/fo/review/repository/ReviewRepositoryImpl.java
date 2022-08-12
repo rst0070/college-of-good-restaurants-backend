@@ -82,10 +82,10 @@ public class ReviewRepositoryImpl implements ReviewRepository{
         //if(scopeStart < 1 || scopeEnd < scopeStart) throw new DataAccessException();
         //예외 적용이 필요하다.
         String selectReviews = "" +
-                "SELECT review_id, post_date " +
+                "SELECT review_id " +
                 "FROM REVIEW " +
                 "WHERE PLACE_id = ? " +
-                "ORDER BY post_date " +
+                "ORDER BY review_id " +
                 "LIMIT ? OFFSET ? ";
         return jdbcTemplate.query(
                 selectReviews,
@@ -94,6 +94,24 @@ public class ReviewRepositoryImpl implements ReviewRepository{
                     return this.selectReview(reviewId);
                 },
                 placeId,
+                scopeEnd - scopeStart + 1,
+                scopeStart - 1
+        );
+    }
+
+    @Override
+    public List<Review> selectReviewByUserId(String userId, int scopeStart, int scopeEnd) throws DataAccessException {
+        String sql = "" +
+                "SELECT review_id " +
+                "FROM REVIEW " +
+                "WHERE USER_id = ? " +
+                "ORDER BY review_id " +
+                "LIMIT ? OFFSET ? ";
+
+        return jdbcTemplate.query(
+                sql,
+                (rs, rn) -> this.selectReview(rs.getLong("review_id")),
+                userId,
                 scopeEnd - scopeStart + 1,
                 scopeStart - 1
         );

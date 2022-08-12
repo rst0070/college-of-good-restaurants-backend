@@ -23,6 +23,16 @@ public interface ReviewRepository {
     List<Review> selectReviewByPlaceId(int placeId, int scopeStart, int scopeEnd) throws DataAccessException;
 
     /**
+     * 특정 user_id의 사용자가 작성한 리뷰를 가져온다.
+     * @param userId
+     * @param scopeStart
+     * @param scopeEnd
+     * @return
+     * @throws DataAccessException
+     */
+    List<Review> selectReviewByUserId(String userId, int scopeStart, int scopeEnd) throws DataAccessException;
+
+    /**
      * review를 DB에 저장한다.(REVIEW와 REVIEW_IMAGE_LIST테이블에)
      * 오류 발생시 해당 pk를 갖고있는 review정보를 지우며 예외발생
      * @param review

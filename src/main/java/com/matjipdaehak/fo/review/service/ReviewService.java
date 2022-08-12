@@ -21,4 +21,6 @@ public interface ReviewService {
      * @return
      */
     List<Review> getReviewsByPlaceId(int placeId, int scopeStart, int scopeEnd);
+
+    List<Review> getReviewByUserId(String userId, int scopeStart, int scopeEnd);
 }

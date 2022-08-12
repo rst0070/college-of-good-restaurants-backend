@@ -74,4 +74,22 @@ public class ReviewController {
         int scopeEnd = json.get("scope_end").asInt();
         return reviewWithCommentsService.getReviewWithCommentsByPlaceId(placeId, scopeStart, scopeEnd);
     }
+
+    /**
+     *
+     * @param json
+     * {
+     *     "user_id":"wonbinkim",
+     *     "scope_start":"1",
+     *     "scope_end":"10"
+     * }
+     * @return
+     */
+    @RequestMapping("/get-review-by-user-id")
+    public List<ReviewWithComments> getReviewByUserId(@RequestBody JsonNode json){
+        String userId = json.get("user_id").asText();
+        int scopeStart = json.get("scope_start").asInt();
+        int scopeEnd = json.get("scope_end").asInt();
+        return this.reviewWithCommentsService.getReviewWithCommentsByUserId(userId, scopeStart, scopeEnd);
+    }
 }
