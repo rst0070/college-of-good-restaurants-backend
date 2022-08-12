@@ -31,6 +31,7 @@ public class PlaceController {
     /**
      * 예시 데이터
      * {
+     *  "user_id": "wonbinkim"
      * 	"category_name": "테마파크",
      * 	"kakao_id": "22225498",
      * 	"phone": "0507-1352-1401",
@@ -59,7 +60,7 @@ public class PlaceController {
                     req.get("category_name"),
                     req.get("image-url")
             );
-            placeId = placeService.createNewPlace(place);
+            placeId = placeService.createNewPlace(place, req.get("user_id"));
         }catch(Exception ex){
             logger.info(ex.getMessage());
             res.setStatus(500);
@@ -130,5 +131,18 @@ public class PlaceController {
     public ExtendedPlace getPlace(@RequestBody JsonNode json){
         int placeId = json.get("place_id").asInt();
         return extendedPlaceService.getExtendedPlaceByPlaceId(placeId);
+    }
+
+    /**
+     *
+     * @param json
+     * @return
+     */
+    @PostMapping("/get-place-by-user-id")
+    public List<ExtendedPlace> getPlaceByUserId(@RequestBody JsonNode json){
+        String userId = json.get("user_id").asText();
+        int scopeStart = json.get("scope_start").asInt();
+        int scopeEnd = json.get("scope_end").asInt();
+        return extendedPlaceService.getExtendedPlaceByRegistrantId(userId, scopeStart, scopeEnd);
     }
 }

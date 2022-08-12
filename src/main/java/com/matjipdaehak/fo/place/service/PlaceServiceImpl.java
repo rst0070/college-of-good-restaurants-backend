@@ -2,6 +2,8 @@ package com.matjipdaehak.fo.place.service;
 
 import com.matjipdaehak.fo.exception.DataAlreadyExistException;
 import com.matjipdaehak.fo.place.model.Place;
+import com.matjipdaehak.fo.place.model.PlaceRegistrant;
+import com.matjipdaehak.fo.place.repository.PlaceRegistrantRepository;
 import com.matjipdaehak.fo.place.repository.PlaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -14,10 +16,14 @@ import java.util.List;
 public class PlaceServiceImpl implements PlaceService{
 
     private final PlaceRepository placeRepository;
+    private final PlaceRegistrantRepository placeRegistrantRepository;
+
 
     @Autowired
-    public PlaceServiceImpl(PlaceRepository placeRepository){
+    public PlaceServiceImpl(PlaceRepository placeRepository,
+                            PlaceRegistrantRepository placeRegistrantRepository){
         this.placeRepository = placeRepository;
+        this.placeRegistrantRepository = placeRegistrantRepository;
     }
 
     /**
@@ -28,9 +34,13 @@ public class PlaceServiceImpl implements PlaceService{
      */
     @Override
     @Transactional
-    public int createNewPlace(Place place) throws DataAlreadyExistException {
+    public int createNewPlace(Place place, String userId) throws DataAlreadyExistException {
         try{
-            return placeRepository.insertPlace(place);
+            int placeId = placeRepository.insertPlace(place);
+            PlaceRegistrant registrant = new PlaceRegistrant(placeId, userId);
+            placeRegistrantRepository.insertPlaceRegistrant(registrant);
+
+            return placeId;
         }catch(DataAccessException ex){
             throw new DataAlreadyExistException(ex.getMessage());
         }
@@ -45,4 +55,11 @@ public class PlaceServiceImpl implements PlaceService{
     public Place getPlaceByPlaceId(int placeId) {
         return this.placeRepository.selectPlace(placeId);
     }
+
+    @Override
+    public List<Integer> getPlaceIdByRegistrantId(String userId, int scopeStart, int scopeEnd) {
+        return placeRegistrantRepository.selectPlaceIdByRegistrantId(userId, scopeStart, scopeEnd);
+    }
+
+
 }

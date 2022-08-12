@@ -12,6 +12,8 @@ public interface ExtendedPlaceService {
      */
     ExtendedPlace getExtendedPlaceByPlaceId(int placeId);
 
+    List<ExtendedPlace> getExtendedPlaceByRegistrantId(String userId, int scopeStart, int scopeEnd);
+
     /**
      * keyword에 매칭되는 장소를 검색한다.
      * 이때 장소의 이름, 주소, 카테고리 등을 검색하고

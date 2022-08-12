@@ -66,6 +66,7 @@ public class PlaceRepositoryImpl implements PlaceRepository{
      * 2번의 기능을 따로 메서드로 만들어야하는지 고민해보자.
      *
      * @param place - place id만 없는 place객체
+     * @return int - place의 id - db에서 자동생성
      * @throws DataAccessException
      */
     @Override

@@ -112,7 +112,7 @@ public class ExtendedPlaceRepositoryImpl implements ExtendedPlaceRepository{
                 "   COLLEGE_id = ? and " + //COLLEGE_id는 1개로 제한되기 때문에 review : place : place_list의 관계는 n:1:1의 관계가 된다.
                 "   (r.post_text like ? or p.place_name like ? or p.place_address like ? or kp.category = ?) " +
                 "GROUP BY PLACE_id " +
-                "order by count desc " +
+                //"order by count desc " +
                 "LIMIT ? OFFSET ? ";
 
         Iterator<Integer> placeIds = jdbcTemplate.query(
