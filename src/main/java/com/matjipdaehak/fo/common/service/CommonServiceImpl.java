@@ -21,4 +21,23 @@ public class CommonServiceImpl implements CommonService{
     public List<CollegeStudentCount> getNumberOfStudentsInEachCollege(){
         return commonRepository.getNumberOfStudentsInEachCollege();
     }
+
+    @Override
+    public long getCurrentDate() {
+        return System.currentTimeMillis();
+    }
+
+    @Override
+    public long getUniqueIdByCurrentDate() {
+        long result = this.getCurrentDate() * 10000;
+        long randomSalt = (long)(Math.random() * 10000);
+        return result + randomSalt;
+    }
+
+    @Override
+    public long getCurrentDateFromUniqueId(long uniqueId) {
+        return uniqueId / 10000;
+    }
+
+
 }

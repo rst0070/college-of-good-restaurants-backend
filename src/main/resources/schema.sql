@@ -71,7 +71,7 @@ create table EMAIL_AUTH_CODE(
 );
 
 create table REVIEW(
-    review_id bigint primary key auto_increment,
+    review_id bigint primary key,
 	PLACE_id int,
     USER_id varchar(20),
     post_date date not null,
@@ -90,7 +90,7 @@ create table REVIEW_IMAGE_LIST(
 );
 
 create table COMMENT(
-    comment_id bigint primary key auto_increment,
+    comment_id bigint primary key,
     REVIEW_id bigint,
     USER_id varchar(20),
     comment_text text not null,

@@ -1,5 +1,6 @@
 package com.matjipdaehak.fo.review.repository;
 
+import com.matjipdaehak.fo.common.service.CommonService;
 import com.matjipdaehak.fo.review.model.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -13,10 +14,15 @@ public class ReviewRepositoryImpl implements ReviewRepository{
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final JdbcTemplate jdbcTemplate;
+    private final CommonService commonService;
 
     @Autowired
-    public ReviewRepositoryImpl(JdbcTemplate jdbcTemplate){
+    public ReviewRepositoryImpl(
+            JdbcTemplate jdbcTemplate,
+            CommonService commonService
+    ){
         this.jdbcTemplate = jdbcTemplate;
+        this.commonService = commonService;
     }
 
 
@@ -117,23 +123,15 @@ public class ReviewRepositoryImpl implements ReviewRepository{
         );
     }
 
-    @Override
-    public void insertReview(Review review) {
-        //리뷰저장
-        String reviewSql = "" +
-                "INSERT INTO REVIEW(PLACE_id, USER_id, post_date, post_text, rating) " +
-                "   VALUES(?, ?, ?, ?, ?) ";
-        jdbcTemplate.update(reviewSql,
-                review.getPlaceId(),
-                review.getUserId(),
-                review.getPostDate(),
-                review.getPostText(),
-                review.getRating());
-
+    /**
+     * 리뷰의 이미지들을(이미지의 url들) REVIEW_IMAGE_LIST테이블에 저장한다.
+     * @param review - review id가 있는 review 객체
+     */
+    private void insertReviewImageList(Review review){
         //리뷰 이미지 url 저장
         String imageSql = "" +
-                "INSERT INTO REVIEW_IMAGE_LIST(REVIEW_PLACE_id, REVIEW_USER_id, image_url) " +
-                "   VALUES(?, ?, ?) ";
+                "INSERT INTO REVIEW_IMAGE_LIST(REVIEW_id, image_url) " +
+                "   VALUES(?, ?) ";
 
         List<String> urlList = review.getImageUrls();
         if(urlList == null) return;
@@ -142,11 +140,57 @@ public class ReviewRepositoryImpl implements ReviewRepository{
         //url이 있을때 이를 저장한다.
         while(urls.hasNext()) {
             jdbcTemplate.update(imageSql,
-                    review.getPlaceId(),
-                    review.getUserId(),
+                    review.getReviewId(),
                     urls.next());
         }
+    }
 
+    /**
+     * 리뷰의 아이디가 DB상에 존재하는지 확인한다.
+     * @param reviewId - 확인하려는 아이디의 값
+     * @return true - DB상에 존재함. false - 존재하지 않음:사용가능
+     */
+    private boolean isIdExist(long reviewId){
+        String sql = "" +
+                "SELECT EXISTS( " +
+                " SELECT review_id " +
+                " FROM REVIEW " +
+                " WHERE review_id = ? " +
+                ") ";
+        return jdbcTemplate.queryForObject(
+                sql,
+                (rs, rn) -> rs.getBoolean(1),
+                reviewId
+        );
+    }
+    /**
+     * 리뷰를 저장한다.
+     * 1. 리뷰의 아이디 생성
+     * 2. 리뷰저장
+     * 3. 리뷰의 이미지들을 저장
+     * @param review
+     */
+    @Override
+    public void insertReview(Review review) {
+        review.setReviewId(this.commonService.getUniqueIdByCurrentDate());
+
+        //리뷰아이디가 이미 DB상에 있으면 계속 새로운 아이디를 생성해본다.
+        while( this.isIdExist(review.getReviewId()) )
+            review.setReviewId(this.commonService.getUniqueIdByCurrentDate());
+
+        //리뷰저장
+        String reviewSql = "" +
+                "INSERT INTO REVIEW(review_id, PLACE_id, USER_id, post_date, post_text, rating) " +
+                "   VALUES(?, ?, ?, ?, ?, ?) ";
+        jdbcTemplate.update(reviewSql,
+                review.getReviewId(),
+                review.getPlaceId(),
+                review.getUserId(),
+                review.getPostDate(),
+                review.getPostText(),
+                review.getRating());
+        //리뷰 이미지 url들 저장
+        this.insertReviewImageList(review);
     }
 
     @Override

@@ -2,12 +2,14 @@ package com.matjipdaehak.fo.review.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.*;
 
 @Data
 @NoArgsConstructor
+@JsonDeserialize(using = ReviewDeserializer.class)
 public class Review {
     /*
     review_id bigint autoincrement

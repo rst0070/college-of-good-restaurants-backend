@@ -1,5 +1,6 @@
 package com.matjipdaehak.fo.review.controller;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,9 +10,11 @@ import com.matjipdaehak.fo.review.service.ReviewService;
 import com.matjipdaehak.fo.review.service.ReviewWithCommentsService;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -22,18 +25,22 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final ReviewWithCommentsService reviewWithCommentsService;
     private final ObjectMapper objectMapper;
+    private final SimpleDateFormat dateFormat;
 
     @Autowired
     public ReviewController(ReviewService reviewService,
                             ReviewWithCommentsService reviewWithCommentsService,
-                            ObjectMapper objectMapper){
+                            ObjectMapper objectMapper,
+                            ApplicationContext context){
         this.reviewService = reviewService;
         this.reviewWithCommentsService = reviewWithCommentsService;
         this.objectMapper = objectMapper;
+        this.dateFormat = context.getBean("yyyy-mm-dd", SimpleDateFormat.class);
     }
 
     /**
-     *
+     * review의 review id가 결정되지 않았는데 이를 어느 순간에 결정해야하나..?
+     * @param review - json형태의 요청 내용을 ReviewDeserializer가 review 객체로 변환
      * {
      *     "place_id" : "1",
      *     "user_id" : "wonbinkim",
@@ -42,22 +49,11 @@ public class ReviewController {
      *     "rating":"4",
      *     "image_urls":[]
      * }
-     *
-     * @param json - json형태의 요청 내용
      */
     @RequestMapping("/add-review")
-    public Map<String, String> addReview(@RequestBody String json, HttpServletResponse res){
-        try{
-            Review review = objectMapper.readValue(json, Review.class);
-            reviewService.createNewReview(review);
-        }catch (JsonMappingException jex){
-            logger.info(jex.getMessage());
-        }catch(Exception ex){
-            logger.info(ex.getMessage());
-            res.setStatus(500);
-            return Map.of("message", ex.getMessage());
-        }
-        return null;
+    public Map<String, String> addReview(@RequestBody Review review) throws Exception{
+        reviewService.createNewReview(review);
+        return Map.of("message", "success");
     }
 
 
