@@ -2,6 +2,7 @@ package com.matjipdaehak.fo.user.repository;
 
 import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -26,13 +27,29 @@ public class MatjipDaehakUserDetailsRepositoryImpl implements MatjipDaehakUserDe
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
+    @Override
+    public boolean isUserIdExist(String username) {
+        String sql = "" +
+                "select EXISTS( " +
+                "select 1 " +
+                "from USER " +
+                "where user_id = ? " +
+                ")";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                (rs, rowNum) -> rs.getBoolean(1),
+                username
+        );
+    }
+
     /**
      *
      * @param username - 찾고자하는 사용자 아이디(USER.user_id 해당)
      * @return MatjipDaehakUserDetails. 만약 해당 아이디의 user가 없는 경우 null
      */
     @Override
-    public MatjipDaehakUserDetails getUserDetailsByUsername(String username){
+    public MatjipDaehakUserDetails selectUser(String username){
         String query = "select * from USER where user_id = :id";
 
         SqlRowSet row = namedParameterJdbcTemplate.queryForRowSet(
@@ -55,6 +72,25 @@ public class MatjipDaehakUserDetailsRepositoryImpl implements MatjipDaehakUserDe
                 userDetails.getUsername(),
                 userDetails.getPassword(),
                 userDetails.getCollegeEmailAddress()
+        );
+    }
+
+    @Override
+    public void updateUser(MatjipDaehakUserDetails userDetails){
+        if(!this.isUserIdExist(userDetails.getUsername())) return;
+
+        String sql = "" +
+                "UPDATE USER " +
+                "SET COLLEGE_id = ?, nickname = ?, user_id = ?, password = ?, college_email_address = ? " +
+                "WHERE user_id = ? ";
+
+        jdbcTemplate.update(sql,
+                userDetails.getCollegeId(),
+                userDetails.getNickname(),
+                userDetails.getUsername(),
+                userDetails.getPassword(),
+                userDetails.getCollegeEmailAddress(),
+                userDetails.getUsername()
         );
     }
 
