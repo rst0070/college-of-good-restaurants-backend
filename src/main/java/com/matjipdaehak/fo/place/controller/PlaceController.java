@@ -1,6 +1,7 @@
 package com.matjipdaehak.fo.place.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.matjipdaehak.fo.exception.DataAlreadyExistException;
 import com.matjipdaehak.fo.place.model.ExtendedPlace;
 import com.matjipdaehak.fo.place.service.ExtendedPlaceService;
 import org.slf4j.*;
@@ -60,6 +61,10 @@ public class PlaceController {
                     req.get("category_name"),
                     req.get("image-url")
             );
+
+            if( this.placeService.isPlaceExists(place.getAddress(), place.getName()) )
+                throw new DataAlreadyExistException("해당 가게가 이미 존재합니다.");
+
             placeId = placeService.createNewPlace(place, req.get("user_id"));
         }catch(Exception ex){
             logger.info(ex.getMessage());

@@ -19,6 +19,30 @@ public class PlaceRepositoryImpl implements PlaceRepository{
     }
 
     /**
+     * Place는 가게의 이름과 주소의 조합으로 유일하게 구분된다.
+     * 즉 가게의 주소와 이름의 조합이 유일해야하며 이것을 통해 가게가 이미 DB상에 존재하는지 확인할 수 있다.
+     *
+     * @param address - 가게 주소
+     * @param name    - 가게 이름
+     * @return true - 존재함. false - 없음(등록가능)
+     */
+    @Override
+    public boolean isPlaceExists(String address, String name) {
+        String sql = "" +
+                "SELECT EXISTS( " +
+                " SELECT place_id " +
+                " FROM PLACE " +
+                " WHERE place_address = ? and place_name = ? " +
+                ") ";
+        return jdbcTemplate.queryForObject(
+                sql,
+                (rs, rn) -> rs.getBoolean(1),
+                address,
+                name
+        );
+    }
+
+    /**
      * PLACE가 등록되면 근처의 학교들에도 PLACE를 등록해줘야한다.
      * 이때 기준은 학교부터의 거리이므로 제한거리를 계산해 등록할 학교를 구하고
      * 해당 학교들에 PLACE를 등록시켜줘야한다.
@@ -45,7 +69,7 @@ public class PlaceRepositoryImpl implements PlaceRepository{
                         place.getLatitude(),
                         place.getLongitude(),
                         place.getLatitude()
-                        ).iterator();
+                ).iterator();
 
         while(colleges.hasNext()){
             jdbcTemplate.update(
