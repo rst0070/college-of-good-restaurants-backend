@@ -12,4 +12,10 @@ public interface CommentService {
      * @return List<Comment>
      */
     List<Comment> getCommentByReviewId(long reviewId);
+
+    /**
+     * DB에 새로운 댓글객체를 등록한다.
+     * @param comment - comment id가 없는 comment객체
+     */
+    void createNewComment(Comment comment);
 }

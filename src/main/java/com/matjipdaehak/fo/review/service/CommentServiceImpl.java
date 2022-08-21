@@ -22,4 +22,9 @@ public class CommentServiceImpl implements CommentService{
     public List<Comment> getCommentByReviewId(long reviewId) {
         return commentRepository.selectCommentByReviewId(reviewId);
     }
+
+    @Override
+    public void createNewComment(Comment comment) {
+        this.commentRepository.insertComment(comment);
+    }
 }
