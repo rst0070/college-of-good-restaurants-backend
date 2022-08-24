@@ -1,4 +1,4 @@
-package com.matjipdaehak.fo.security.authentication;
+package com.matjipdaehak.fo.security.auth;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

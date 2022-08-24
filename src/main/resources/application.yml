@@ -26,5 +26,13 @@ spring:
           starttls:
             enable: true
           auth: true
+# error 메세지 설정
+server:
+  error:
+    include-message: always
+    include-exception: false
+    include-stacktrace: never
+    whitelabel:
+      enabled: false
 # mail 설정
 

@@ -9,6 +9,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  */
 public interface JwtService {
 
+    /**
+     * MatjipDaehakUserDetails 객체를 이용해 해당하는 JWT를 생성한다.
+     * @param userDetails - MatjipDaehakUserDetails 객체
+     * @return
+     * @throws JwtException
+     */
     String createJwtWithUserDetails(MatjipDaehakUserDetails userDetails) throws JwtException;
 
     MatjipDaehakUserDetails getUserDetailsFromJwt(String jwt) throws JwtException, UsernameNotFoundException;

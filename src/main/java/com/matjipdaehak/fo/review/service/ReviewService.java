@@ -1,6 +1,9 @@
 package com.matjipdaehak.fo.review.service;
 
+import com.matjipdaehak.fo.exception.CustomException;
 import com.matjipdaehak.fo.review.model.Review;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
 
 public interface ReviewService {
@@ -10,7 +13,8 @@ public interface ReviewService {
      * 이때 review_id는 auto increment로 생성되므로 review객체는 이것만 가지고 있지않으면 됨.
      * @param review - reviewId가 정해지지 않은 review 객체.
      */
-    void createNewReview(Review review);
+    @Transactional
+    void createNewReview(Review review) throws CustomException;
 
 
     /**

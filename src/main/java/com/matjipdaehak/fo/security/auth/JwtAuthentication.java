@@ -1,4 +1,4 @@
-package com.matjipdaehak.fo.security.authentication;
+package com.matjipdaehak.fo.security.auth;
 
 import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
 import org.springframework.security.core.Authentication;
@@ -36,17 +36,26 @@ public class JwtAuthentication implements Authentication {
         return JWT_STR;
     }
 
+    /**
+     * @return 해당하는 사용자의 MatjipDaehakUserDetails객체
+     */
     @Override
     public MatjipDaehakUserDetails getDetails() {
         return this.userDetails;
     }
 
-
+    /**
+     * @return 해당하는 사용자 아이디
+     */
     @Override
     public String getPrincipal() {
         return userDetails.getUsername();
     }
 
+    /**
+     * 인증되었는지 여부
+     * @return true 인증이 완료됨. false 인증을 해야됨
+     */
     @Override
     public boolean isAuthenticated() {
         return authenticated;

@@ -70,6 +70,7 @@ public class JwtServiceImpl implements JwtService{
 
     @Override
     public MatjipDaehakUserDetails getUserDetailsFromJwt(String jwt) throws JwtException, UsernameNotFoundException {
+        //jwt형식오류 or 만료등의 문제로 JwtException 발생 가능
         Claims claims = this.getClaimsFromJwt(jwt);
         return userDetailsService.loadUserByUsername(claims.get("username").toString());
     }

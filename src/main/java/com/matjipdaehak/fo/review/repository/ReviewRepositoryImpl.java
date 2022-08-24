@@ -171,7 +171,7 @@ public class ReviewRepositoryImpl implements ReviewRepository{
      * @param review
      */
     @Override
-    public void insertReview(Review review) {
+    public void insertReview(Review review) throws DataAccessException {
         review.setReviewId(this.commonService.getUniqueIdByCurrentDate());
 
         //리뷰아이디가 이미 DB상에 있으면 계속 새로운 아이디를 생성해본다.

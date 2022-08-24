@@ -1,6 +1,6 @@
 package com.matjipdaehak.fo.security;
 
-import com.matjipdaehak.fo.security.authentication.JwtAuthenticationProvider;
+import com.matjipdaehak.fo.security.auth.JwtAuthenticationProvider;
 import com.matjipdaehak.fo.security.filter.CORSFilter;
 import com.matjipdaehak.fo.security.filter.JwtAuthenticationFilter;
 import com.matjipdaehak.fo.security.service.JwtService;
@@ -14,9 +14,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 

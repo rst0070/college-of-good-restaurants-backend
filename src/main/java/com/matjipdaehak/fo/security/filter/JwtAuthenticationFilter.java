@@ -1,17 +1,25 @@
 package com.matjipdaehak.fo.security.filter;
 
-import com.matjipdaehak.fo.security.authentication.JwtAuthentication;
-import com.matjipdaehak.fo.security.authentication.WhiteListAuthentication;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.matjipdaehak.fo.exception.CustomException;
+import com.matjipdaehak.fo.exception.ErrorCode;
+import com.matjipdaehak.fo.security.auth.JwtAuthentication;
+import com.matjipdaehak.fo.security.auth.WhiteListAuthentication;
 import org.slf4j.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.*;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.BufferedWriter;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -58,26 +66,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try{
-            if(this.isAuthenticationRequired(request)){//jwt인증 필요
-                // jwt 정보 헤더 확인
-                final String header = request.getHeader("Authorization");
-                if(header == null || !header.startsWith("Bearer ")) throw new BadCredentialsException("type of Authorization header has problem");
-                //jwt문자열
-                final String JWT = header.substring(7);
-                //jwt의 인증정보 가져오기
-                JwtAuthentication authInfo = new JwtAuthentication(JWT);
-                //정보가 맞는지 인증하기
-                Authentication succeedAuth = authenticationManager.authenticate(authInfo);
-                //인증성공시 SecurityContext에 인증정보등록 & 다음필터로 요청 전달.
-                this.successfulAuthentication(request, response, filterChain, succeedAuth);
+        if(!this.isAuthenticationRequired(request)) {//jwt인증 불필요. WhiteListAuthentication으로 등록
+            this.successfulAuthentication(request, response, filterChain, new WhiteListAuthentication(request));
+            return;
+        }
 
-            }else{//jwt인증 불필요. WhiteListAuthentication으로 등록
-                this.successfulAuthentication(request, response, filterChain, new WhiteListAuthentication(request));
-            }
+        // jwt 정보 헤더 확인
+        // 헤더가 없을경우 null값으로 반환됨
+        final String header = request.getHeader("Authorization");
+        if(header == null || !header.startsWith("Bearer ")){
+            this.unsuccessfulAuthentication(request, response,new CustomException(ErrorCode.AUTHORIZATION_HEADER_ERROR));
+            return;
+        }
+
+        try{
+            //jwt문자열
+            final String JWT = header.substring(7);
+            //jwt의 인증정보 가져오기
+            JwtAuthentication authInfo = new JwtAuthentication(JWT);
+
+            //정보가 맞는지 인증하기
+            //인증시 문제가 발생하면 AuthenticationException이 발생한다.
+            Authentication succeedAuth = authenticationManager.authenticate(authInfo);
+            //인증성공시 SecurityContext에 인증정보등록 & 다음필터로 요청 전달.
+            this.successfulAuthentication(request, response, filterChain, succeedAuth);
+
         }catch(AuthenticationException ex){
-            logger.warn(ex.getMessage());
-            this.unsuccessfulAuthentication(request, response, ex);
+            this.unsuccessfulAuthentication(request, response, new CustomException(ErrorCode.INVALID_JWT));
         }
     }
 
@@ -101,16 +116,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * 인증예외 발생시 인증이 안된것으로 처리 및 클라이언트에 자동으로 대응, 이벤트 리스너에 전달
+     * 인증예외 발생시 인증이 안된것으로 처리 및 클라이언트에 대응한다.
+     * 에러 리스폰스를 작성한다.
      * @param request
      * @param response
      * @param failed - 발생한 예외
      * @throws IOException
      * @throws ServletException
      */
-    private void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    private void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, CustomException failed) throws IOException, ServletException, CustomException {
         SecurityContextHolder.clearContext();
-        this.failureHandler.onAuthenticationFailure(request, response, failed);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        // create a JSON object
+        ObjectNode errorBody = mapper.createObjectNode();
+        errorBody.put("timestamp", (new Date(System.currentTimeMillis())).toString() );
+        errorBody.put("status", failed.getRawStatusCode());
+        errorBody.put("error", failed.getMessage());
+
+        //send response
+        response.setStatus(failed.getRawStatusCode());
+        BufferedWriter bw = new BufferedWriter(response.getWriter());
+        bw.write(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(errorBody));
+        bw.flush();
+        bw.close();
     }
 
     /**

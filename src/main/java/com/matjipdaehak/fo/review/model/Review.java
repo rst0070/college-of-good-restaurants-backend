@@ -1,24 +1,14 @@
 package com.matjipdaehak.fo.review.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.*;
 
 @Data
 @NoArgsConstructor
-@JsonDeserialize(using = ReviewDeserializer.class)
 public class Review {
-    /*
-    review_id bigint autoincrement
-	PLACE_id int,
-    USER_id varchar(20),
-    post_date date not null,
-    post_text text not null,
-    rating int,
-     */
+
     @JsonProperty("review_id")
     private long reviewId;
 
