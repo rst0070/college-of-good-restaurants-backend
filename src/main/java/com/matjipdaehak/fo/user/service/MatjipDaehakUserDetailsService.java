@@ -23,6 +23,8 @@ public interface MatjipDaehakUserDetailsService extends UserDetailsService {
     @Override
     MatjipDaehakUserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
+    MatjipDaehakUserDetails loadUserByJwt(String jwt);
+
     /**
      * 특정 유저의 패스워드가 맞는지 확인한다.
      * @param username - 확인하려는 유저의 아이디.
@@ -43,8 +45,10 @@ public interface MatjipDaehakUserDetailsService extends UserDetailsService {
 
     /**
      * 사용자의 패스워드를 변경한다.
-     * @param username
-     * @param rawPassword
+     * 이때 기존의 패스워드로 로그인했던 JWT를 모두 무효화 해야하므로
+     * JwtService에서 무효처리하도록 전달해야한다.
+     * @param username - 유저아이디
+     * @param rawPassword - 인코딩되지 않은 새로운 패스워드
      */
     void changeUserPassword(String username, String rawPassword);
 

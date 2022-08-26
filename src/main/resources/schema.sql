@@ -109,4 +109,10 @@ create table PLACE_LIKE(
     foreign key (USER_id) references USER(user_id)
 );
 
+create table JWT(
+    jwt_id long primary key,
+    user_id varchar(20),
+    jwt text
+);
+
 

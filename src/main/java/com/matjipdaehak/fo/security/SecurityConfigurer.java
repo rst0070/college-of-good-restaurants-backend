@@ -4,6 +4,7 @@ import com.matjipdaehak.fo.security.auth.JwtAuthenticationProvider;
 import com.matjipdaehak.fo.security.filter.CORSFilter;
 import com.matjipdaehak.fo.security.filter.JwtAuthenticationFilter;
 import com.matjipdaehak.fo.security.service.JwtService;
+import com.matjipdaehak.fo.user.service.MatjipDaehakUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,13 +22,16 @@ import java.util.List;
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     private final JwtService jwtService;
+    private final MatjipDaehakUserDetailsService userDetailsService;
 
     @Autowired
     public SecurityConfigurer(
-            JwtService jwtService
+            JwtService jwtService,
+            MatjipDaehakUserDetailsService userDetailsService
     ){
         super();
         this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -81,6 +85,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationProvider jwtAuthenticationProvider(){
-        return new JwtAuthenticationProvider(jwtService);
+        return new JwtAuthenticationProvider(jwtService, userDetailsService);
     }
 }

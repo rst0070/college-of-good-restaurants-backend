@@ -1,6 +1,7 @@
 package com.matjipdaehak.fo.user.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.matjipdaehak.fo.security.model.JwtInfo;
 import com.matjipdaehak.fo.security.service.JwtService;
 import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
 import com.matjipdaehak.fo.user.service.MatjipDaehakUserDetailsService;
@@ -38,16 +39,18 @@ public class SecurityController {
      */
     @PostMapping("/change-password")
     public void changePassword(@RequestBody JsonNode json, HttpServletRequest req, HttpServletResponse res){
+        //extract jwt from header and get info from it
         String jwt = req.getHeader("Authorization").toString().substring(7);
-        MatjipDaehakUserDetails userDetails = this.jwtService.getUserDetailsFromJwt(jwt);
+        JwtInfo jwtInfo = this.jwtService.getJwtInfoFromJwt(jwt);
 
+        //get user id and password to change from request body
         String userId = json.get("user_id").asText();
         String rawOldPassword = new String(Base64.getDecoder().decode(json.get("old_password").asText()));
         String rawNewPassword = new String(Base64.getDecoder().decode(json.get("new_password").asText()));
 
         //바꿀려고하는 계정의 아이디와 jwt상의 유저아이디가 일치하는지 확인
         //아닐경우 권한오류
-        if(!userDetails.getUsername().equals(userId)){
+        if(!jwtInfo.getUserId().equals(userId)){
             res.setStatus(404);
             return;
         }

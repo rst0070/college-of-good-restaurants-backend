@@ -2,12 +2,14 @@ package com.matjipdaehak.fo.security.auth;
 
 import com.matjipdaehak.fo.security.service.JwtService;
 import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
+import com.matjipdaehak.fo.user.service.MatjipDaehakUserDetailsService;
 import io.jsonwebtoken.JwtException;
 import org.slf4j.*;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
@@ -17,12 +19,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private final JwtService jwtService;
+    private final MatjipDaehakUserDetailsService userDetailsService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public JwtAuthenticationProvider(
-            JwtService jwtService
+            JwtService jwtService,
+            MatjipDaehakUserDetailsService userDetailsService
     ){
         this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
     }
 
     /**
@@ -37,8 +42,11 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             JwtAuthentication auth = (JwtAuthentication) authentication;
             final String jwt = auth.getCredentials();
 
+            //check validity: check from DB
+            if(!this.jwtService.checkJwtValidity(jwt)) throw new InsufficientAuthenticationException("jwt가 올바르지 않음.");
+            //get userdetails
             MatjipDaehakUserDetails userDetails =
-                    jwtService.getUserDetailsFromJwt(jwt);
+                    userDetailsService.loadUserByJwt(jwt);
 
             auth.setUserDetails(userDetails);
             auth.setAuthenticated(true);

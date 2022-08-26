@@ -2,6 +2,8 @@ package com.matjipdaehak.fo.user.service;
 
 import com.matjipdaehak.fo.college.model.College;
 import com.matjipdaehak.fo.college.service.CollegeService;
+import com.matjipdaehak.fo.security.model.JwtInfo;
+import com.matjipdaehak.fo.security.service.JwtService;
 import com.matjipdaehak.fo.user.model.MatjipDaehakUserDetails;
 import com.matjipdaehak.fo.user.repository.MatjipDaehakUserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,22 +16,31 @@ public class MatjipDaehakUserDetailsServiceImpl implements MatjipDaehakUserDetai
 
     private final MatjipDaehakUserDetailsRepository userDetailsRepository;
     private final CollegeService collegeService;
+    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public MatjipDaehakUserDetailsServiceImpl(
             MatjipDaehakUserDetailsRepository userDetailsRepository,
             CollegeService collegeService,
+            JwtService jwtService,
             PasswordEncoder passwordEncoder
     ){
         this.userDetailsRepository = userDetailsRepository;
         this.collegeService = collegeService;
+        this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public MatjipDaehakUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userDetailsRepository.selectUser(username);
+    }
+
+    @Override
+    public MatjipDaehakUserDetails loadUserByJwt(String jwt) {
+        JwtInfo jwtInfo = this.jwtService.getJwtInfoFromJwt(jwt);
+        return this.loadUserByUsername(jwtInfo.getUserId());
     }
 
     @Override
@@ -59,12 +70,24 @@ public class MatjipDaehakUserDetailsServiceImpl implements MatjipDaehakUserDetai
         return this.userDetailsRepository.isUserIdExist(username);
     }
 
+    /**
+     * changes password and save on DB.
+     * also remove all jwts issued at previous times
+     * @param username - 유저아이디
+     * @param rawPassword - 인코딩되지 않은 새로운 패스워드
+     */
     @Override
     public void changeUserPassword(String username, String rawPassword) {
+        //load user information and encode new password
         MatjipDaehakUserDetails userDetails = this.loadUserByUsername(username);
         String password = passwordEncoder.encode(rawPassword);
+        //set new password on Object
         userDetails.setPassword(password);
+
+        //save changes on DB
         this.userDetailsRepository.updateUser(userDetails);
+        //deprive the user of all JWT issued with previous password
+        this.jwtService.depriveOfJwtByUserId(username);
     }
 
 }
