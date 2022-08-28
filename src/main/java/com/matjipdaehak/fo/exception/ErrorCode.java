@@ -11,6 +11,7 @@ public enum ErrorCode {
      */
     INVALID_JWT(HttpStatus.UNAUTHORIZED, "유효하지 않은 Json Web Token으로 요청했습니다."),
     AUTHORIZATION_HEADER_ERROR(HttpStatus.UNAUTHORIZED, "요청의 Authorization헤더를 찾을 수 없거나 잘못된 형식입니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
 
     /**
      * 422 Unprocessable Entity - 요청의 데이터가 비즈니스 로직을 처리하기에 문제가 있음.

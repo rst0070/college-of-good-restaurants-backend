@@ -124,6 +124,17 @@ public class ReviewRepositoryImpl implements ReviewRepository{
     }
 
     /**
+     * review_id 에 해당하는 리뷰 이미지들을 삭제한다.
+     * @param reviewId - 지울려는 리뷰 이미지들의 리뷰아이디.
+     */
+    private void deleteReviewImageList(long reviewId){
+        String sql = "" +
+                "DELETE FROM REVIEW_IMAGE_LIST " +
+                "WHERE REVIEW_id = ? ";
+        jdbcTemplate.update(sql, reviewId);
+    }
+
+    /**
      * 리뷰의 이미지들을(이미지의 url들) REVIEW_IMAGE_LIST테이블에 저장한다.
      * @param review - review id가 있는 review 객체
      */
@@ -190,6 +201,28 @@ public class ReviewRepositoryImpl implements ReviewRepository{
                 review.getPostText(),
                 review.getRating());
         //리뷰 이미지 url들 저장
+        this.insertReviewImageList(review);
+    }
+
+    /**
+     * updates review
+     * 1. UPDATE REVIEW Table
+     * 2. DELETE Previous Review images
+     * 3. INSERT New images
+     * @param review
+     * @throws DataAccessException
+     */
+    @Override
+    public void updateReview(Review review) throws DataAccessException {
+        String sql = "" +
+                "UPDATE REVIEW " +
+                "SET PLACE_id = ?, USER_id = ?, post_date = ?, post_text = ?, rating = ? " +
+                "WHERE review_id = ? ";
+
+        jdbcTemplate.update(sql,
+                review.getPlaceId(), review.getUserId(), review.getPostDate(), review.getPostText(), review.getRating(), review.getReviewId());
+
+        this.deleteReviewImageList(review.getReviewId());
         this.insertReviewImageList(review);
     }
 

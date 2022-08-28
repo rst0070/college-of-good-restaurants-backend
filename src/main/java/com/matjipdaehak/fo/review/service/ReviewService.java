@@ -16,6 +16,12 @@ public interface ReviewService {
     @Transactional
     void createNewReview(Review review) throws CustomException;
 
+    /**
+     * return Review object for inputed review id
+     * @param reviewId
+     * @return
+     */
+    Review getReviewByReviewId(long reviewId);
 
     /**
      * 날짜의 내림차순으로 리뷰를 가져온다.
@@ -27,4 +33,27 @@ public interface ReviewService {
     List<Review> getReviewsByPlaceId(int placeId, int scopeStart, int scopeEnd);
 
     List<Review> getReviewByUserId(String userId, int scopeStart, int scopeEnd);
+
+    /**
+     * 특정 사용자가 리뷰를 수정하는 상황이다.
+     * 즉 해당 메소드는
+     * 1. 해당 하는 아이디의 리뷰가 존재하는지 확인
+     * 2. 해당 리뷰의 등록자가 기존의 리뷰 등록자와 같은지 확인.
+     * 3. 기존 리뷰 삭제
+     * 4. 새로운 리뷰 등록
+     * @param review
+     */
+    void updateReview(Review review);
+
+    /**
+     * 특정 사용자가 특정 리뷰를 삭제하는 상황.
+     * 즉
+     * 1. 리뷰가 존재하는지 확인
+     * 2. 사용자가 해당 리뷰의 소유자가 맞는지 확인
+     * 3. 리뷰 삭제
+     * 의 순서로 로직이 작동한다.
+     * @param userId
+     * @param reviewId
+     */
+    void deleteReview(String userId, long reviewId);
 }

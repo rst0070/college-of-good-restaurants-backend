@@ -40,6 +40,14 @@ public interface ReviewRepository {
     void insertReview(Review review) throws DataAccessException;
 
     /**
+     * Designed to update all things without review_id.
+     * But do not change user id with this method because business logic does not work like that.
+     * @param review
+     * @throws DataAccessException
+     */
+    void updateReview(Review review) throws DataAccessException;
+
+    /**
      * review_id에 해당되는 리뷰, 리뷰이미지들에 대한 참조를 지운다.
      * @param reviewId - 지울 리뷰의 id
      * @throws DataAccessException - 지우는 과정에서 예외 발생시. review id의 문제.
