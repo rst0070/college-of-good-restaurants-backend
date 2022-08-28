@@ -18,4 +18,17 @@ public interface CommentService {
      * @param comment - comment id가 없는 comment객체
      */
     void createNewComment(Comment comment);
+
+    /**
+     *
+     * @param comment
+     */
+    void updateComment(Comment comment);
+
+    /**
+     * 특정 댓글을 삭제한다. 이때 삭제는 작성한 본인이 할 수 있으므로 jwt의 사용자 아이디를 넘겨주면됨
+     * @param userId
+     * @param commentId
+     */
+    void deleteComment(String userId, long commentId);
 }

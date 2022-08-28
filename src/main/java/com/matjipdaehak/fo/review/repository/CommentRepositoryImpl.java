@@ -64,6 +64,28 @@ public class CommentRepositoryImpl implements CommentRepository{
     }
 
     @Override
+    public Comment selectComment(long commentId) {
+        String sql = "" +
+                "SELECT REVIEW_id, USER_id, comment_text,  comment_date " +
+                "FROM COMMENT " +
+                "WHERE comment_id = ? ";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                (rs, rn) -> {
+                    Comment comment = new Comment();
+                    comment.setCommentId( commentId );
+                    comment.setReviewId( rs.getLong("REVIEW_id"));
+                    comment.setUserId( rs.getString("USER_id"));
+                    comment.setCommentText( rs.getString("comment_text"));
+                    comment.setCommentDate( rs.getDate("comment_date"));
+                    return comment;
+                },
+                commentId
+        );
+    }
+
+    @Override
     public List<Comment> selectCommentByReviewId(long reviewId) {
         String sql = "" +
                 "SELECT comment_id, USER_id, comment_text,  comment_date " +
@@ -82,5 +104,31 @@ public class CommentRepositoryImpl implements CommentRepository{
                     return comment;
                 },
                 reviewId);
+    }
+
+    /**
+     * @param comment
+     */
+    @Override
+    public void updateComment(Comment comment) {
+        String sql = "" +
+                "UPDATE COMMENT " +
+                "SET REVIEW_id = ?, USER_id = ?, comment_text = ?, comment_date = ? " +
+                "WHERE comment_id = ? ";
+        jdbcTemplate.update(sql,
+                comment.getReviewId(), comment.getUserId(), comment.getCommentText(), comment.getCommentDate(), comment.getCommentId());
+    }
+
+    /**
+     * 특정 댓글을 삭제한다.
+     *
+     * @param commentId
+     */
+    @Override
+    public void deleteComment(long commentId) {
+        String sql = "" +
+                "DELETE FROM COMMENT " +
+                "WHERE comment_id = ? ";
+        jdbcTemplate.update(sql, commentId);
     }
 }

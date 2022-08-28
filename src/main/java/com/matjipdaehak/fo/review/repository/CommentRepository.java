@@ -20,9 +20,28 @@ public interface CommentRepository {
     void insertComment(Comment comment);
 
     /**
+     *
+     * @param commentId
+     * @return
+     */
+    Comment selectComment(long commentId);
+
+    /**
      * 특정 리뷰에 대한 모든 comment를 가져온다.
      * @param reviewId - review를 특정할 review id
      * @return List<Comment>
      */
     List<Comment> selectCommentByReviewId(long reviewId);
+
+    /**
+     *
+     * @param comment
+     */
+    void updateComment(Comment comment);
+
+    /**
+     * 특정 댓글을 삭제한다.
+     * @param commentId
+     */
+    void deleteComment(long commentId);
 }
