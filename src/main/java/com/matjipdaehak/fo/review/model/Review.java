@@ -1,5 +1,6 @@
 package com.matjipdaehak.fo.review.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import java.util.*;
 public class Review {
 
     @JsonProperty("review_id")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private long reviewId;
 
     @JsonProperty("place_id")
