@@ -7,6 +7,8 @@ import com.matjipdaehak.fo.review.model.Comment;
  */
 public interface CommentService {
 
+    Comment getCommentByCommentId(long commentId);
+
     /**
      * Review에 대한 comment들을 가져온다.
      * @return List<Comment>
@@ -20,15 +22,21 @@ public interface CommentService {
     void createNewComment(Comment comment);
 
     /**
-     *
+     * Comment를 update한다.
+     * 이때 repository에서 comment_text와 comment_date만 수정하도록 제한되어있다.
      * @param comment
      */
     void updateComment(Comment comment);
 
     /**
-     * 특정 댓글을 삭제한다. 이때 삭제는 작성한 본인이 할 수 있으므로 jwt의 사용자 아이디를 넘겨주면됨
-     * @param userId
+     * 특정 댓글을 삭제한다.
      * @param commentId
      */
-    void deleteComment(String userId, long commentId);
+    void deleteComment(long commentId);
+
+    /**
+     * 특정 리뷰에 대한 댓글을 모두 삭제한다.
+     * @param reviewId
+     */
+    void deleteCommentByReviewId(long reviewId);
 }

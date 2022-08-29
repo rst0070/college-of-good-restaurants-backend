@@ -46,14 +46,9 @@ public interface ReviewService {
     void updateReview(Review review);
 
     /**
-     * 특정 사용자가 특정 리뷰를 삭제하는 상황.
-     * 즉
-     * 1. 리뷰가 존재하는지 확인
-     * 2. 사용자가 해당 리뷰의 소유자가 맞는지 확인
-     * 3. 리뷰 삭제
-     * 의 순서로 로직이 작동한다.
-     * @param userId
+     * 특정 리뷰와 그 댓글을 모두 삭제한다.
+     * 이때 댓글이 리뷰를 참조하므로 댓글을 먼저 삭제해야함
      * @param reviewId
      */
-    void deleteReview(String userId, long reviewId);
+    void deleteReview(long reviewId);
 }

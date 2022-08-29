@@ -40,8 +40,8 @@ public interface ReviewRepository {
     void insertReview(Review review) throws DataAccessException;
 
     /**
-     * Designed to update all things without review_id.
-     * But do not change user id with this method because business logic does not work like that.
+     * Designed to do not update place_id, review_id, user_id of review
+     * Thus,...
      * @param review
      * @throws DataAccessException
      */

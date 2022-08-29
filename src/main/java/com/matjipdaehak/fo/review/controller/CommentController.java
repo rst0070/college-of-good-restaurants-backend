@@ -65,13 +65,11 @@ public class CommentController {
     }
 
     /**
-     *
+     *  comment의 text만 수정한다.
      * @param req
      * @param json
      * {
      *     "comment_id" : "12313333123",
-     *     "review_id" : "123123213",
-     *     "user_id" : "wonbinkim",
      *     "comment_text" : "review message"
      * }
      */
@@ -83,20 +81,17 @@ public class CommentController {
 
         //compare userid in jwt vs user id in comment for update
         //user could only change oneself review
-        if( !jwtInfo.getUserId().equals( json.get("user_id").asText() ) ) throw new CustomException(ErrorCode.UNAUTHORIZED);
-
-        Comment comment = new Comment();
-        comment.setCommentId( json.get("comment_id").asLong() );
-        comment.setReviewId( json.get("review_id").asLong() );
-        comment.setUserId( json.get("user_id").asText() );
+        Comment comment = this.commentService.getCommentByCommentId(json.get("comment_id").asLong());
+        if( !jwtInfo.getUserId().equals( comment.getUserId() ) ) throw new CustomException(ErrorCode.UNAUTHORIZED);
+        //update data
         comment.setCommentText( json.get("comment_text").asText() );
         comment.setCommentDate( new Date(this.commonService.getCurrentDate()) );
-
+        //update logic
         this.commentService.updateComment(comment);
     }
 
     /**
-     *
+     * jwt 정보로 해당 리뷰의 실 소유자가 맞는지 확인한다.
      * @param req
      * @param json
      * {
@@ -108,7 +103,10 @@ public class CommentController {
         //jwt information inside of header
         final String jwt = req.getHeader("Authorization").substring(7);
         JwtInfo jwtInfo = this.jwtService.getJwtInfoFromJwt(jwt);
-
-        this.commentService.deleteComment(jwtInfo.getUserId(), json.get("comment_id").asLong() );
+        //check jwt user
+        Comment comment = this.commentService.getCommentByCommentId(json.get("comment_id").asLong());
+        if(!jwtInfo.getUserId().equals(comment.getUserId())) throw new CustomException(ErrorCode.UNAUTHORIZED);
+        //delete logic
+        this.commentService.deleteComment(json.get("comment_id").asLong() );
     }
 }

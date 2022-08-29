@@ -216,11 +216,11 @@ public class ReviewRepositoryImpl implements ReviewRepository{
     public void updateReview(Review review) throws DataAccessException {
         String sql = "" +
                 "UPDATE REVIEW " +
-                "SET PLACE_id = ?, USER_id = ?, post_date = ?, post_text = ?, rating = ? " +
+                "SET post_date = ?, post_text = ?, rating = ? " +
                 "WHERE review_id = ? ";
 
         jdbcTemplate.update(sql,
-                review.getPlaceId(), review.getUserId(), review.getPostDate(), review.getPostText(), review.getRating(), review.getReviewId());
+                review.getPostDate(), review.getPostText(), review.getRating(), review.getReviewId());
 
         this.deleteReviewImageList(review.getReviewId());
         this.insertReviewImageList(review);

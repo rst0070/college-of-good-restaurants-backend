@@ -107,16 +107,16 @@ public class CommentRepositoryImpl implements CommentRepository{
     }
 
     /**
+     * comment_text와 comment_date만 수정한다.
      * @param comment
      */
     @Override
     public void updateComment(Comment comment) {
         String sql = "" +
                 "UPDATE COMMENT " +
-                "SET REVIEW_id = ?, USER_id = ?, comment_text = ?, comment_date = ? " +
+                "SET comment_text = ?, comment_date = ? " +
                 "WHERE comment_id = ? ";
-        jdbcTemplate.update(sql,
-                comment.getReviewId(), comment.getUserId(), comment.getCommentText(), comment.getCommentDate(), comment.getCommentId());
+        jdbcTemplate.update(sql, comment.getCommentText(), comment.getCommentDate(), comment.getCommentId());
     }
 
     /**
@@ -130,5 +130,18 @@ public class CommentRepositoryImpl implements CommentRepository{
                 "DELETE FROM COMMENT " +
                 "WHERE comment_id = ? ";
         jdbcTemplate.update(sql, commentId);
+    }
+
+    /**
+     * 특정 리뷰에 대한 댓글을 모두삭제한다.
+     *
+     * @param reviewId
+     */
+    @Override
+    public void deleteCommentByReviewId(long reviewId) {
+        String sql = "" +
+                "DELETE FROM COMMENT " +
+                "WHERE REVIEW_id = ? ";
+        jdbcTemplate.update(sql, reviewId);
     }
 }

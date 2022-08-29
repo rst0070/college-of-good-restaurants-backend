@@ -129,14 +129,13 @@ public class ReviewController {
 
     /**
      * 리뷰를 수정한다.
-     * 규칙 (오직 자신의 리뷰만 수정가능하다.) --> jwt인증정보와 수정할 내용 비교 & 기존의 리뷰가 jwt사용자와 일치하는지 비교
+     * 규칙 (오직 자신의 리뷰만 수정가능하다.) --> 기존의 리뷰가 jwt사용자와 일치하는지 비교
      * 이때 post_date는 수정 요청 시점으로 변경된다.
+     * 또한 place id와 user id는 수정불가하다.
      * @param req
      * @param json
      * {
-     *     "review_id": "123213213"
-     *     "place_id" : "1",
-     *     "user_id" : "wonbinkim",
+     *     "review_id": "123213213",
      *     "post_text":"테스트 리뷰",
      *     "rating":"4",
      *     "image_urls":[]
@@ -149,27 +148,26 @@ public class ReviewController {
             final String jwt = req.getHeader("Authorization").substring(7);
             JwtInfo jwtInfo = this.jwtService.getJwtInfoFromJwt(jwt);
 
+            //get review from DB and update data
+            Review review = this.reviewService.getReviewByReviewId( json.get("review_id").asLong() );
+
             //compare userid in jwt vs user id in review for update
             //user could only change oneself review
-            if( !jwtInfo.getUserId().equals( json.get("user_id").asText() ) ) throw new CustomException(ErrorCode.UNAUTHORIZED);
+            if( !jwtInfo.getUserId().equals( review.getUserId() ) ) throw new CustomException(ErrorCode.UNAUTHORIZED);
 
-            //create Review object
-            Review newReview = new Review();
-            newReview.setPostDate(new Date( this.commonService.getCurrentDate() ) );
-            newReview.setReviewId( json.get("review_id").asLong() );
-            newReview.setPlaceId( json.get("place_id").asInt() );
-            newReview.setUserId( json.get("user_id").asText() );
-            newReview.setPostText( json.get("post_text").asText() );
-            newReview.setRating( json.get("rating").asInt() );
+            //update data get from request
+            review.setPostDate(new Date( this.commonService.getCurrentDate() ) );
+            review.setPostText( json.get("post_text").asText() );
+            review.setRating( json.get("rating").asInt() );
+
             try{//it's ok to have no review image
-                newReview.setImageUrls( stringListReader.readValue(json.get("image_urls")) );
+                review.setImageUrls( stringListReader.readValue(json.get("image_urls")) );
             }catch(IOException ie){}
             catch (NullPointerException ne){}
             catch (IllegalArgumentException ie){}
 
-            this.reviewService.updateReview(
-                    newReview
-            );
+            // update data in db
+            this.reviewService.updateReview(review);
 
         }catch(NullPointerException ne){
             throw new CustomException(ErrorCode.LACK_OF_DATA);
@@ -178,8 +176,10 @@ public class ReviewController {
     }
 
     /**
-     * 특정 리뷰를 삭제한다. 이때 헤더의 jwt를 확인해 본인이 맞는지 확인한다.
+     * 특정 리뷰를 삭제한다. 또 리뷰의 댓글을 모두 삭제한다.
+     * 이때 헤더의 jwt를 확인해 본인이 맞는지 확인한다.
      * 또한 해당 리뷰가 존재해야한다.
+     *
      * @param json
      * {
      *     "review_id": "123123123"
@@ -190,11 +190,11 @@ public class ReviewController {
         //jwt information inside of header
         final String jwt = req.getHeader("Authorization").substring(7);
         JwtInfo jwtInfo = this.jwtService.getJwtInfoFromJwt(jwt);
-        //delete logic
-        this.reviewService.deleteReview(
-                jwtInfo.getUserId(),
-                json.get("review_id").asLong()
-        );
 
+        //check review info about user who made the review
+        Review review = this.reviewService.getReviewByReviewId(json.get("review_id").asLong());
+        if(!review.getUserId().equals( jwtInfo.getUserId() )) throw new CustomException(ErrorCode.UNAUTHORIZED);
+        //delete logic
+        this.reviewService.deleteReview( review.getReviewId() );
     }
 }

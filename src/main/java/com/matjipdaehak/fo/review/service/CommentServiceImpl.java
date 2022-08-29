@@ -21,6 +21,11 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
+    public Comment getCommentByCommentId(long commentId) {
+        return this.commentRepository.selectComment(commentId);
+    }
+
+    @Override
     public List<Comment> getCommentByReviewId(long reviewId) {
         return commentRepository.selectCommentByReviewId(reviewId);
     }
@@ -31,29 +36,29 @@ public class CommentServiceImpl implements CommentService{
     }
 
     /**
-     * 파라미터 comment객체의 user id를 검사해 이미 저장되어있는 user id와 동일한지 확인.
-     * 아닐경우 예외발생
      * @param comment
      */
     @Override
     public void updateComment(Comment comment) {
-        Comment prevComment = this.commentRepository.selectComment(comment.getCommentId());
-        if( !comment.getUserId().equals(prevComment.getUserId()) ) throw new CustomException(ErrorCode.UNAUTHORIZED);
-
         this.commentRepository.updateComment(comment);
     }
 
     /**
-     * 특정 댓글을 삭제한다. 이때 삭제는 작성한 본인이 할 수 있으므로 jwt의 사용자 아이디를 넘겨주면됨
-     *
-     * @param userId
+     * 특정 댓글을 삭제한다.
      * @param commentId
      */
     @Override
-    public void deleteComment(String userId, long commentId) {
-        Comment comment = this.commentRepository.selectComment(commentId);
-        if( !userId.equals( comment.getUserId() ) ) throw new CustomException(ErrorCode.UNAUTHORIZED);
-
+    public void deleteComment(long commentId) {
         this.commentRepository.deleteComment(commentId);
+    }
+
+    /**
+     * 특정 리뷰에 대한 댓글을 모두 삭제한다.
+     *
+     * @param reviewId
+     */
+    @Override
+    public void deleteCommentByReviewId(long reviewId) {
+        this.commentRepository.deleteCommentByReviewId(reviewId);
     }
 }

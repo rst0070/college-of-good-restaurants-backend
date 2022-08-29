@@ -34,7 +34,7 @@ public interface CommentRepository {
     List<Comment> selectCommentByReviewId(long reviewId);
 
     /**
-     *
+     * comment_text와 comment_date만 수정한다.
      * @param comment
      */
     void updateComment(Comment comment);
@@ -44,4 +44,9 @@ public interface CommentRepository {
      * @param commentId
      */
     void deleteComment(long commentId);
+
+    /**
+     * 특정 리뷰에 대한 댓글을 모두삭제한다.
+     */
+    void deleteCommentByReviewId(long reviewId);
 }

@@ -16,11 +16,14 @@ import java.util.List;
 public class ReviewServiceImpl implements ReviewService{
 
     private final ReviewRepository reviewRepository;
+    private final CommentService commentService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public ReviewServiceImpl(ReviewRepository reviewRepository){
+    public ReviewServiceImpl(ReviewRepository reviewRepository,
+                             CommentService commentService){
         this.reviewRepository = reviewRepository;
+        this.commentService = commentService;
     }
 
     @Override
@@ -61,37 +64,17 @@ public class ReviewServiceImpl implements ReviewService{
     @Transactional
     @Override
     public void updateReview(Review review) {
-        Review prevReview = this.getReviewByReviewId(review.getReviewId());
-        //해당 리뷰를 작성한 사용자가 아니라면 예외처리
-        if(!prevReview.getUserId().equals(review.getUserId())) throw new CustomException(ErrorCode.UNAUTHORIZED);
-
         this.reviewRepository.updateReview(review);
     }
 
     /**
-     * 특정 사용자가 특정 리뷰를 삭제하는 상황.
-     * 즉
-     * 1. 리뷰가 존재하는지 확인
-     * 2. 사용자가 해당 리뷰의 소유자가 맞는지 확인
-     * 3. 리뷰 삭제
-     * 의 순서로 로직이 작동한다.
-     *
-     * @param userId
+     * 특정 리뷰와 그 댓글을 모두 삭제한다.
      * @param reviewId
      */
     @Override
-    public void deleteReview(String userId, long reviewId) {
-        try{
-            Review review = this.getReviewByReviewId(reviewId);
-            //해당 리뷰를 작성한 사용자가 아니라면 예외처리
-            if(!review.getUserId().equals(userId)) throw new CustomException(ErrorCode.UNAUTHORIZED);
-
-            this.reviewRepository.deleteReview(reviewId);
-
-        }catch(DataAccessException de){
-
-        }
-
+    public void deleteReview(long reviewId) {
+        this.commentService.deleteCommentByReviewId(reviewId);
+        this.reviewRepository.deleteReview(reviewId);
     }
 
 }
