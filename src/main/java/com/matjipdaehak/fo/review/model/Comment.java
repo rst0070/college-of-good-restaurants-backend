@@ -1,5 +1,6 @@
 package com.matjipdaehak.fo.review.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import java.util.*;
@@ -11,8 +12,10 @@ import java.util.*;
 public class Comment {
 
     @JsonProperty("comment_id")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private long commentId;
     @JsonProperty("review_id")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private long reviewId;
     @JsonProperty("user_id")
     private String userId;
