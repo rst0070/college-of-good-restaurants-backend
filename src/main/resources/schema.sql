@@ -8,13 +8,10 @@ create table COLLEGE(
 
 create table COLLEGE_MAIL_DOMAIN(
 	COLLEGE_id int primary key,
-    college_mail_domain varchar(320) not null
+    college_mail_domain varchar(320) not null,
+    foreign key (COLLEGE_id) references COLLEGE (college_id)
 );
 
-alter table college_mail_domain
-	add constraint link_to_college_table
-    foreign key (COLLEGE_id) references COLLEGE (college_id);
-    
 create table USER(
 	user_id varchar(20) primary key,
     password varchar(60) not null,
@@ -45,16 +42,10 @@ create table PLACE_REGISTRANT(
 create table PLACE_LIST_AT_COLLEGE(
 	COLLEGE_id int,
     PLACE_id int,
-    primary key (COLLEGE_id, PLACE_id)
+    primary key (COLLEGE_id, PLACE_id),
+    foreign key (COLLEGE_id) references COLLEGE (college_id),
+    foreign key (PLACE_id) references PLACE (place_id)
 );
-
-alter table place_list_at_college
-	add constraint link_to_college_from_place_list
-    foreign key (COLLEGE_id) references COLLEGE (college_id);
-    
-alter table place_list_at_college
-	add constraint link_to_place_from_place_list
-    foreign key (PLACE_id) references PLACE (place_id);
     
 create table KAKAO_PLACE(
 	PLACE_id int primary key,
@@ -83,10 +74,10 @@ create table REVIEW(
 );
 
 create table REVIEW_IMAGE_LIST(
+    image_id bigint primary key,
     REVIEW_id bigint,
-    image_url varchar(1000),
-    foreign key (REVIEW_id) references REVIEW(review_id),
-    primary key (REVIEW_id, image_url)
+    image_url text,
+    foreign key (REVIEW_id) references REVIEW(review_id)
 );
 
 create table COMMENT(
@@ -95,7 +86,6 @@ create table COMMENT(
     USER_id varchar(20),
     comment_text text not null,
     comment_date datetime,
-    primary key (comment_id),
     foreign key (REVIEW_id) references REVIEW(review_id),
     foreign key (USER_id) references USER(user_id)
 );
@@ -110,7 +100,7 @@ create table PLACE_LIKE(
 );
 
 create table JWT(
-    jwt_id long primary key,
+    jwt_id bigint primary key,
     user_id varchar(20),
     jwt text
 );
