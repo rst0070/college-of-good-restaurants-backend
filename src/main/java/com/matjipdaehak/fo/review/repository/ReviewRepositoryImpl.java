@@ -91,7 +91,7 @@ public class ReviewRepositoryImpl implements ReviewRepository{
                 "SELECT review_id " +
                 "FROM REVIEW " +
                 "WHERE PLACE_id = ? " +
-                "ORDER BY review_id " +
+                "ORDER BY review_id DESC " +
                 "LIMIT ? OFFSET ? ";
         return jdbcTemplate.query(
                 selectReviews,
@@ -136,13 +136,14 @@ public class ReviewRepositoryImpl implements ReviewRepository{
 
     /**
      * 리뷰의 이미지들을(이미지의 url들) REVIEW_IMAGE_LIST테이블에 저장한다.
+     * 이때 이미지 아이디는 commonService에서 랜덤 아이디를 발급받아 사용한다.
      * @param review - review id가 있는 review 객체
      */
     private void insertReviewImageList(Review review){
         //리뷰 이미지 url 저장
         String imageSql = "" +
-                "INSERT INTO REVIEW_IMAGE_LIST(REVIEW_id, image_url) " +
-                "   VALUES(?, ?) ";
+                "INSERT INTO REVIEW_IMAGE_LIST(image_id, REVIEW_id, image_url) " +
+                "   VALUES(?, ?, ?) ";
 
         List<String> urlList = review.getImageUrls();
         if(urlList == null) return;
@@ -151,6 +152,7 @@ public class ReviewRepositoryImpl implements ReviewRepository{
         //url이 있을때 이를 저장한다.
         while(urls.hasNext()) {
             jdbcTemplate.update(imageSql,
+                    commonService.getUniqueIdByCurrentDate(),
                     review.getReviewId(),
                     urls.next());
         }

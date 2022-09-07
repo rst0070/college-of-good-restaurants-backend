@@ -7,8 +7,10 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.matjipdaehak.fo.common.service.CommonService;
 import com.matjipdaehak.fo.exception.CustomException;
 import com.matjipdaehak.fo.exception.ErrorCode;
+import com.matjipdaehak.fo.review.model.ExtendedReview;
 import com.matjipdaehak.fo.review.model.Review;
 import com.matjipdaehak.fo.review.model.ReviewWithComments;
+import com.matjipdaehak.fo.review.service.ExtendedReviewService;
 import com.matjipdaehak.fo.review.service.ReviewService;
 import com.matjipdaehak.fo.review.service.ReviewWithCommentsService;
 import com.matjipdaehak.fo.security.model.JwtInfo;
@@ -28,6 +30,7 @@ public class ReviewController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ReviewService reviewService;
     private final ReviewWithCommentsService reviewWithCommentsService;
+    private final ExtendedReviewService extendedReviewService;
     private final ObjectMapper objectMapper;
     private final ObjectReader stringListReader;
     private final CommonService commonService;
@@ -36,11 +39,13 @@ public class ReviewController {
     @Autowired
     public ReviewController(ReviewService reviewService,
                             ReviewWithCommentsService reviewWithCommentsService,
+                            ExtendedReviewService extendedReviewService,
                             ObjectMapper objectMapper,
                             CommonService commonService,
                             JwtService jwtService){
         this.reviewService = reviewService;
         this.reviewWithCommentsService = reviewWithCommentsService;
+        this.extendedReviewService = extendedReviewService;
         this.objectMapper = objectMapper;
         this.stringListReader = objectMapper.readerFor(new TypeReference<List<String>>() {});
         this.commonService = commonService;
@@ -120,11 +125,11 @@ public class ReviewController {
      * @return
      */
     @RequestMapping("/get-review-by-user-id")
-    public List<ReviewWithComments> getReviewByUserId(@RequestBody JsonNode json){
+    public List<ExtendedReview> getReviewByUserId(@RequestBody JsonNode json){
         String userId = json.get("user_id").asText();
         int scopeStart = json.get("scope_start").asInt();
         int scopeEnd = json.get("scope_end").asInt();
-        return this.reviewWithCommentsService.getReviewWithCommentsByUserId(userId, scopeStart, scopeEnd);
+        return this.extendedReviewService.getExtendedReviewByUserId(userId, scopeStart, scopeEnd);
     }
 
     /**
