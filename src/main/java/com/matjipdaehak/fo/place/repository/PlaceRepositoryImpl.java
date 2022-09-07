@@ -43,6 +43,27 @@ public class PlaceRepositoryImpl implements PlaceRepository{
     }
 
     /**
+     * 가게의 이름과 주소의 조합으로 place id가져온다.
+     *
+     * @param address
+     * @param name
+     * @return
+     */
+    @Override
+    public int getPlaceId(String address, String name) {
+        String sql = "" +
+                "SELECT place_id " +
+                "FROM PLACE " +
+                "WHERE place_address = ? and place_name = ? ";
+        return jdbcTemplate.queryForObject(
+                sql,
+                (rs, rn) -> rs.getInt(1),
+                address,
+                name
+        );
+    }
+
+    /**
      * PLACE가 등록되면 근처의 학교들에도 PLACE를 등록해줘야한다.
      * 이때 기준은 학교부터의 거리이므로 제한거리를 계산해 등록할 학교를 구하고
      * 해당 학교들에 PLACE를 등록시켜줘야한다.

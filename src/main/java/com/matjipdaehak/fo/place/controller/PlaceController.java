@@ -62,14 +62,17 @@ public class PlaceController {
                     req.get("image-url")
             );
 
-            if( this.placeService.isPlaceExists(place.getAddress(), place.getName()) )
+            if( this.placeService.isPlaceExists(place.getAddress(), place.getName()) ){
+                placeId = this.placeService.getPlaceId(place.getAddress(), place.getName());
                 throw new DataAlreadyExistException("해당 가게가 이미 존재합니다.");
+            }
 
             placeId = placeService.createNewPlace(place, req.get("user_id"));
         }catch(Exception ex){
             logger.info(ex.getMessage());
             res.setStatus(500);
-            return Map.of("message", ex.getMessage());
+            return Map.of("message", ex.getMessage(),
+                    "place_id", ""+placeId);
         }
         return Map.of(
                 "message", "success",

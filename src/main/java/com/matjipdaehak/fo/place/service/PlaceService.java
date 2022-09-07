@@ -7,6 +7,14 @@ import java.util.*;
 public interface PlaceService {
 
     /**
+     * 가게의 주소와 이름을 이용해 place 아이디를 가져온다.
+     * @param address
+     * @param name
+     * @return
+     */
+    int getPlaceId(String address, String name);
+
+    /**
      * Place는 가게의 이름과 주소의 조합으로 유일하게 구분된다.
      * 즉 가게의 주소와 이름의 조합이 유일해야하며 이것을 통해 가게가 이미 DB상에 존재하는지 확인할 수 있다.
      * @param address - 가게 주소

@@ -15,6 +15,14 @@ public interface PlaceRepository {
     boolean isPlaceExists(String address, String name);
 
     /**
+     * 가게의 이름과 주소의 조합으로 place id가져온다.
+     * @param address
+     * @param name
+     * @return
+     */
+    int getPlaceId(String address, String name);
+
+    /**
      * Place 객체를 DB에 저장
      * 이때 place id는 auto increament로 생성되므로 필요없다.
      * @param place - place id만 없는 place객체

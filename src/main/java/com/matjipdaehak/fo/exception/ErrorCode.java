@@ -14,6 +14,11 @@ public enum ErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
 
     /**
+     * 409 Conflict
+     */
+    PLACE_ALREADY_EXISTS(HttpStatus.CONFLICT, "해당 가게가 이미 존재합니다."),
+
+    /**
      * 422 Unprocessable Entity - 요청의 데이터가 비즈니스 로직을 처리하기에 문제가 있음.
      */
     LACK_OF_DATA(HttpStatus.UNPROCESSABLE_ENTITY, "필수정보가 누락된 요청입니다."),

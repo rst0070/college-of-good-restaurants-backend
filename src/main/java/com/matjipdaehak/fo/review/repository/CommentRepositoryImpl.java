@@ -85,13 +85,19 @@ public class CommentRepositoryImpl implements CommentRepository{
         );
     }
 
+    /**
+     * 출력 순서가 중요함.
+     * comment_id가 시간값이기때문에 이를 기준으로 내림차순으로 출력
+     * @param reviewId - review를 특정할 review id
+     * @return
+     */
     @Override
     public List<Comment> selectCommentByReviewId(long reviewId) {
         String sql = "" +
                 "SELECT comment_id, USER_id, comment_text,  comment_date " +
                 "FROM COMMENT " +
                 "WHERE REVIEW_id = ? " +
-                "ORDER BY comment_date desc ";
+                "ORDER BY comment_id desc ";
 
         return jdbcTemplate.query(sql,
                 (rs, rn) -> {
