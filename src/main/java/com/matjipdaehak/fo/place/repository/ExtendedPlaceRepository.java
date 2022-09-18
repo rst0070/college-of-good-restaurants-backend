@@ -27,6 +27,7 @@ public interface ExtendedPlaceRepository {
      */
     List<ExtendedPlace> keywordSearchExtendedPlace(int collegeId, String keyword, int scopeStart, int scopeEnd) throws UnprocessableEntityException;
 
+    List<ExtendedPlace> getTop10PlaceInCollegeByReviewCount(int collegeId);
     //List<ExtendedPlace> keywordSearchExtendedPlaceOrderbyReview
 
 }

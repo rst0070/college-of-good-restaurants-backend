@@ -134,4 +134,34 @@ public class ExtendedPlaceRepositoryImpl implements ExtendedPlaceRepository{
 
         return result;
     }
+
+    /**
+     * 특정 college의 리뷰가 많은 place들을 반환
+     * @param collegeId
+     * @return 리뷰의 수가 가장 많은 place10개
+     */
+    @Override
+    public List<ExtendedPlace> getTop10PlaceInCollegeByReviewCount(int collegeId) {
+        //place id의 리스트를 먼저구하기.
+        String sql = "" +
+                "SELECT COUNT(REVIEW.USER_id) as review_count, PLACE.place_id as place_id " +
+                "  FROM PLACE_LIST_AT_COLLEGE INNER JOIN " +
+                "       (PLACE INNER JOIN REVIEW ON PLACE.place_id = REVIEW.PLACE_id) " +
+                "       ON PLACE_LIST_AT_COLLEGE.PLACE_id = PLACE.place_id and PLACE_LIST_AT_COLLEGE.COLLEGE_id = ? " +
+                "  GROUP BY PLACE.place_id " +
+                "  ORDER BY review_count DESC, place_id ASC " +
+                "  LIMIT 10 offset 0 ";
+        //place id들
+        Iterator<Integer> placeIds = jdbcTemplate.query(
+                sql,
+                (rs, rn) -> rs.getInt("place_id"),
+                collegeId
+        ).iterator();
+        //id로 각각의 extendedPlace구해서 리스트화
+        LinkedList<ExtendedPlace> result = new LinkedList<ExtendedPlace>();
+        while(placeIds.hasNext()){
+            result.add(this.selectExtendedPlace(placeIds.next()));
+        }
+        return result;
+    }
 }

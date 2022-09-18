@@ -54,4 +54,9 @@ public class ExtendedPlaceServiceImpl implements ExtendedPlaceService{
     public List<ExtendedPlace> keywordSearchExtendedPlace(int collegeId, String keyword, int scopeStart, int scopeEnd) {
         return extendedPlaceRepository.keywordSearchExtendedPlace(collegeId, keyword, scopeStart, scopeEnd);
     }
+
+    @Override
+    public List<ExtendedPlace> getTop10PlaceInCollegeByReviewCount(int collegeId) {
+        return this.extendedPlaceRepository.getTop10PlaceInCollegeByReviewCount(collegeId);
+    }
 }

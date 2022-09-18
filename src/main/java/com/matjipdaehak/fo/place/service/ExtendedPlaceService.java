@@ -26,4 +26,11 @@ public interface ExtendedPlaceService {
      */
     List<ExtendedPlace> keywordSearchExtendedPlace(int collegeId, String keyword, int scopeStart, int scopeEnd);
 
+    /**
+     * 특정 college에서 리뷰순으로 상위 10개를 반환한다.
+     * @param collegeId
+     * @return
+     */
+    List<ExtendedPlace> getTop10PlaceInCollegeByReviewCount(int collegeId);
+
 }

@@ -3,6 +3,7 @@ package com.matjipdaehak.fo.place.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.matjipdaehak.fo.exception.DataAlreadyExistException;
 import com.matjipdaehak.fo.place.model.ExtendedPlace;
+import com.matjipdaehak.fo.place.model.RecommendedPlace;
 import com.matjipdaehak.fo.place.service.ExtendedPlaceService;
 import org.slf4j.*;
 import com.matjipdaehak.fo.place.service.PlaceService;
@@ -142,7 +143,7 @@ public class PlaceController {
     }
 
     /**
-     *
+     * 특정 사용자가 등록한 place를 ExtendedPlace list로 반환한다.
      * @param json
      * @return
      */
@@ -152,5 +153,24 @@ public class PlaceController {
         int scopeStart = json.get("scope_start").asInt();
         int scopeEnd = json.get("scope_end").asInt();
         return extendedPlaceService.getExtendedPlaceByRegistrantId(userId, scopeStart, scopeEnd);
+    }
+
+    /**
+     * RecommendedPlace형식으로 10개의 Place를 반환한다.
+     * 이때 어떤 방식으로 추천한것인지 부연설명 추가됨.
+     * @param json
+     * {
+     *     "college_id":31
+     * }
+     * @return
+     */
+    @PostMapping("/get-recommended-place")
+    public RecommendedPlace getRecommendedPlace(@RequestBody JsonNode json){
+        int collegeId = json.get("college_id").asInt();
+        List<ExtendedPlace> places = this.extendedPlaceService.getTop10PlaceInCollegeByReviewCount(collegeId);
+        return new RecommendedPlace(
+                "리뷰순 추천",
+                places
+        );
     }
 }
