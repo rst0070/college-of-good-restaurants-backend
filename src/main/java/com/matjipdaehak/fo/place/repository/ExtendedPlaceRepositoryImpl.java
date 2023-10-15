@@ -99,20 +99,20 @@ public class ExtendedPlaceRepositoryImpl implements ExtendedPlaceRepository{
         keyword = '%' + keyword + '%';
 
         String sql = "" +
-                "SELECT p.PLACE_id as place_id, count(r.review_id) as count " +
+                "SELECT PLACE.PLACE_id as place_id, count(r.review_id) as review_count " +
                 "FROM " +
                 "   ( " +
-                "       REVIEW r right outer join " +
-                "       (PLACE p inner join KAKAO_PLACE kp on p.place_id = kp.place_id) " +
-                "       on r.PLACE_id = p.place_id" +
+                "       REVIEW right outer join " +
+                "       (PLACE inner join KAKAO_PLACE on PLACE.place_id = KAKAO_PLACE.place_id) " +
+                "       on REVIEW.PLACE_id = PLACE.place_id" +
                 "   ) " + // review:place:kakao_place 관계 = n:1:1
-                "   inner join PLACE_LIST_AT_COLLEGE l " +
-                "   on p.place_id = l.PLACE_id " +
+                "   inner join PLACE_LIST_AT_COLLEGE " +
+                "   on PLACE.place_id = PLACE_LIST_AT_COLLEGE.PLACE_id " +
                 "where " +
                 "   COLLEGE_id = ? and " + //COLLEGE_id는 1개로 제한되기 때문에 review : place : place_list의 관계는 n:1:1의 관계가 된다.
                 "   (r.post_text like ? or p.place_name like ? or p.place_address like ? or kp.category = ?) " +
                 "GROUP BY PLACE_id " +
-                "order by count desc " +
+                "order by review_count desc, PLACE.PLACE_id asc " +
                 "LIMIT ? OFFSET ? ";
 
         Iterator<Integer> placeIds = jdbcTemplate.query(
